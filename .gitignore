@@ -1,0 +1,13 @@
+# Local deployment metadata
+.vercel/
+
+# Keep only the optimized assets used by the rebuilt site
+assets/*
+!assets/favicon.ico
+!assets/brand/
+assets/brand/*
+!assets/brand/*.webp
+
+# Local/editor artifacts
+.DS_Store
+Thumbs.db
