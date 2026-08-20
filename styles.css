@@ -280,6 +280,7 @@ h1,h2,h3{margin:0}
 .quickbar-agree input{width:16px;height:16px;accent-color:var(--yellow)}
 .quickbar button{padding:14px 30px;border:0;background:var(--red);color:#fff;font-weight:900;font-size:15px;cursor:pointer;transition:.15s}
 .quickbar button:hover{background:#b82a1e}
+.quickbar-tel,.quickbar-apply{display:none}
 
 /* ---------- 플로팅 ---------- */
 .floating{position:fixed;z-index:110;right:22px;bottom:calc(var(--bar-h) + 22px);display:grid;gap:10px}
@@ -349,7 +350,7 @@ h1,h2,h3{margin:0}
   .trust-grid li:nth-child(3){border-left:0}
 }
 @media(max-width:900px){
-  :root{--bar-h:132px}
+  :root{--bar-h:78px}
   .site-header{height:66px;padding:0 18px;gap:0}
   .site-header.scrolled{height:60px}
   .desktop-nav,.header-call{display:none}
@@ -371,10 +372,11 @@ h1,h2,h3{margin:0}
   .section-head{display:block;margin-bottom:34px}
   .section-head>p{margin-top:16px;font-size:14px}
   .story,.menu,.cost,.process,.faq,.posters{padding:70px 20px}
-  .story-grid{grid-template-columns:1fr;gap:46px}
+  .story-grid{grid-template-columns:minmax(0,1fr);gap:46px}
+  .story-grid>*{min-width:0}
   .story h2{font-size:64px}
-  .values{display:grid;grid-template-columns:1fr;gap:10px}
-  .values article{width:100%;aspect-ratio:2.6;margin:0;border-radius:60px}
+  .values{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+  .values article{width:auto;aspect-ratio:auto;padding:22px 18px;margin:0;border-radius:60px}
   .koya-card{max-width:320px;margin:auto}
   .trust-grid{grid-template-columns:1fr}
   .trust-grid li{padding:30px 22px;border-left:0;border-top:1px solid rgba(255,255,255,.2)}
@@ -405,15 +407,22 @@ h1,h2,h3{margin:0}
   .apply-copy{position:static}
   .apply-form{grid-template-columns:1fr;padding:26px 22px;box-shadow:6px 6px 0 var(--ink)}
   .footer{grid-template-columns:1fr;gap:26px;padding:44px 22px}
+  .footer-brand span{font-size:10px}
+  .footer-info a{display:inline-block;padding:7px 0}
+  .float-top span{font-size:10px}
+  .calc-tabs button i{font-size:10px}
   .floating{right:14px;bottom:calc(var(--bar-h) + 14px);gap:8px}
   .float-btn,.float-top{width:60px;height:60px;font-size:10px}
-  .quickbar{height:var(--bar-h);flex-wrap:wrap;align-content:center;gap:8px;padding:10px 14px}
-  .quickbar-call{flex-direction:row;align-items:center;gap:8px;width:100%;margin:0}
-  .quickbar-call a{font-size:26px}
-  .quickbar input[type=text],.quickbar input[type=tel]{flex:1;width:auto;min-width:0;padding:11px 10px;font-size:13px}
-  .quickbar input[name=area]{display:none}
-  .quickbar-agree{margin:0;font-size:11px;order:5}
-  .quickbar button{padding:12px 18px;font-size:14px;order:6;margin-left:auto}
+  /* 모바일 하단바: 좁은 화면에서 입력받는 대신 큰 버튼 2개로 */
+  .quickbar{height:var(--bar-h);gap:8px;padding:9px 12px;align-items:stretch}
+  .quickbar-call,.quickbar input,.quickbar-agree,.quickbar button{display:none}
+  .quickbar-tel,.quickbar-apply{
+    display:flex;flex:1;flex-direction:column;align-items:center;justify-content:center;
+    border-radius:6px;font-weight:900;font-size:13px;line-height:1.25;text-align:center;
+  }
+  .quickbar-tel{background:#fff;color:var(--ink)}
+  .quickbar-tel b{font:800 19px var(--latin);letter-spacing:-.02em}
+  .quickbar-apply{flex:1.15;background:var(--red);color:#fff;font-size:15px}
   .popup-box{padding:30px 22px 0}
   .popup-box h2{font-size:25px}
   .popup-num b{font-size:52px}
