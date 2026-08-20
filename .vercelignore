@@ -1,8 +1,0 @@
-# Upload only the optimized images used by the website
-assets/*
-!assets/favicon.ico
-!assets/brand/
-assets/brand/*
-!assets/brand/*.webp
-
-!assets/brand/*.mp4
