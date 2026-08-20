@@ -38,6 +38,26 @@
     }), { threshold: .05 }).observe(document.querySelector('.hero'));
   }
 
+  /* ---------- 브랜드 로고송 ----------
+     소리가 있는 영상이므로 자동재생하지 않고 사용자가 누를 때만 재생합니다. */
+  const song = document.getElementById('logoSong');
+  const songBtn = document.querySelector('.ls-play');
+  if (song && songBtn) {
+    songBtn.addEventListener('click', () => {
+      song.controls = true;                 // 재생 전에는 컨트롤바를 숨겨 포스터를 온전히 보여줍니다
+      song.play().then(() => { songBtn.hidden = true; }).catch(() => { song.controls = false; });
+    });
+    song.addEventListener('ended', () => {
+      song.currentTime = 0; song.controls = false; songBtn.hidden = false;
+    });
+    /* 화면에서 벗어나면 소리가 계속 나지 않도록 정지 */
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(es => es.forEach(e => {
+        if (!e.isIntersecting && !song.paused) song.pause();
+      }), { threshold: .25 }).observe(song);
+    }
+  }
+
   /* ---------- 헤더 스크롤 ---------- */
   const header = document.querySelector('.site-header');
   addEventListener('scroll', () => {

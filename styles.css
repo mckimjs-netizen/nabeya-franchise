@@ -227,6 +227,30 @@ h1,h2,h3{margin:0}
 .poster-wall img:nth-child(3){transform:rotate(1.6deg)}
 .poster-wall img:hover{transform:rotate(0) translateY(-8px)}
 
+/* ---------- 로고송 ---------- */
+.logosong{max-width:1180px;margin:80px auto 0;display:grid;grid-template-columns:.72fr 1.28fr;gap:48px;align-items:center;color:var(--paper)}
+.ls-kicker{margin:0;font:800 11px var(--latin);letter-spacing:.2em;color:var(--yellow)}
+.logosong-copy h3{margin:14px 0 16px;font:700 clamp(30px,3.2vw,44px)/1.15 var(--serif);letter-spacing:-.04em}
+.logosong-copy>p{margin:0;font:400 15px/1.85 var(--serif);color:#ddd2c6}
+.logosong-copy ul{margin:24px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+.logosong-copy li{padding:7px 13px;border:1px solid rgba(255,255,255,.28);border-radius:30px;font-size:12px;color:#e6dcd1}
+.logosong-player{position:relative;margin:0;border:3px solid var(--paper);background:#000;overflow:hidden}
+.logosong-player video{display:block;width:100%;height:auto}
+.ls-play{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  border:0;background:rgba(24,18,16,.42);color:#fff;cursor:pointer;transition:background .2s;
+}
+.ls-play:hover{background:rgba(24,18,16,.28)}
+.ls-play[hidden]{display:none}
+.ls-tri{
+  width:74px;height:74px;border-radius:50%;background:var(--red);border:3px solid #fff;
+  display:grid;place-items:center;margin-bottom:6px;transition:transform .2s;
+}
+.ls-tri::after{content:"";border-left:22px solid #fff;border-top:13px solid transparent;border-bottom:13px solid transparent;margin-left:6px}
+.ls-play:hover .ls-tri{transform:scale(1.06)}
+.ls-play b{font:700 17px var(--serif);letter-spacing:-.02em}
+.ls-play small{font-size:11.5px;color:#e2d6c9}
+
 /* ---------- Q&A ---------- */
 .faq{padding:110px 5vw;background:var(--ivory)}
 .faq-list{max-width:1000px;margin:auto;border-top:2px solid var(--ink)}
@@ -410,6 +434,11 @@ h1,h2,h3{margin:0}
   .steps{grid-template-columns:1fr}
   .poster-wall{grid-template-columns:1fr;gap:18px;max-width:340px}
   .poster-wall img{transform:none!important}
+  .logosong{grid-template-columns:minmax(0,1fr);gap:26px;margin-top:56px}
+  .logosong-copy h3{font-size:30px}
+  .ls-tri{width:58px;height:58px}
+  .ls-tri::after{border-left-width:18px;border-top-width:11px;border-bottom-width:11px}
+  .ls-play b{font-size:15px}
   .faq summary{font-size:15px;padding:20px}
   .faq details p{padding:0 20px 22px 58px;font-size:14px}
   .apply{padding:70px 22px}
