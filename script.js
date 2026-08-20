@@ -5,12 +5,12 @@
   'use strict';
 
   /* ---------- 히어로 배경 영상 ----------
-     포스터 이미지가 먼저 그려진 뒤, 아래 조건을 모두 만족할 때만 영상을 내려받습니다.
-     · 데스크톱(900px 초과)  · 모션 최소화 설정 아님  · 데이터 절약 모드 아님       */
+     포스터 이미지가 먼저 그려진 뒤 영상을 내려받습니다.
+     모바일은 세로 크롭 경량본(1.3MB)을, 데스크톱은 가로본(2.6MB)을 사용합니다.
+     모션 최소화 · 데이터 절약 · 2G 환경에서는 포스터 이미지만 유지합니다.      */
   const video = document.getElementById('heroVideo');
   function loadHeroVideo() {
     if (!video || video.src) return;
-    if (innerWidth <= 900) return;
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const conn = navigator.connection;
     if (conn && (conn.saveData || /^(slow-)?2g$/.test(conn.effectiveType || ''))) return;
@@ -19,7 +19,7 @@
     const show = () => video.classList.add('playing');
     video.addEventListener('playing', show, { once: true });
     video.addEventListener('canplay', show, { once: true });
-    video.src = video.dataset.src;
+    video.src = innerWidth <= 900 ? video.dataset.srcM : video.dataset.src;
     video.play().catch(() => {});          // 자동재생이 막히면 포스터 이미지 유지
   }
   if (document.readyState === 'complete') loadHeroVideo();
