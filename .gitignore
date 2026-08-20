@@ -7,6 +7,7 @@ assets/*
 !assets/brand/
 assets/brand/*
 !assets/brand/*.webp
+!assets/brand/*.mp4
 
 # Local/editor artifacts
 .DS_Store

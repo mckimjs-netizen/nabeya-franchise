@@ -5,3 +5,4 @@ assets/*
 assets/brand/*
 !assets/brand/*.webp
 
+!assets/brand/*.mp4
