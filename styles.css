@@ -115,7 +115,7 @@ h1,h2,h3{margin:0}
 .values b{font:700 clamp(24px,2.4vw,40px) var(--serif)}
 .values p{margin:6px 0 0;font:400 13px/1.6 var(--serif)}
 .koya-card{margin:0;background:#f0e3c8;border:2px solid var(--ink);box-shadow:12px 12px 0 var(--red);transform:rotate(2deg)}
-.koya-card img{width:100%;mix-blend-mode:multiply}
+.koya-card img{width:100%;height:auto;padding:26px 22px 10px}
 .koya-card figcaption{display:flex;flex-direction:column;padding:18px 20px;border-top:2px solid var(--ink)}
 .koya-card b{font:700 21px var(--serif)}
 .koya-card span{font-size:12px;margin-top:4px}
@@ -178,6 +178,20 @@ h1,h2,h3{margin:0}
 /* ---------- 창업비용 ---------- */
 .cost{padding:110px 5vw;background:var(--ivory)}
 .cost .section-head>p b{background:linear-gradient(transparent 62%,var(--yellow) 62%)}
+/* 2인 창업 후킹 */
+.two-person{
+  max-width:1360px;margin:0 auto 18px;display:flex;align-items:center;flex-wrap:wrap;gap:14px;
+  padding:16px 22px;background:var(--ink);color:var(--paper);
+  border:3px solid var(--ink);box-shadow:6px 6px 0 var(--yellow);
+  font:400 15px/1.6 var(--serif);
+}
+.two-person b{
+  flex:none;display:inline-flex;align-items:center;gap:7px;
+  padding:7px 15px;background:var(--red);border:2px solid #fff;border-radius:30px;
+  font:700 14px 'Noto Sans KR';letter-spacing:-.02em;
+}
+.two-person b::before{content:"※";color:var(--yellow);font-size:1.15em;line-height:1}
+
 .calc{max-width:1360px;margin:0 auto 26px;border:3px solid var(--ink);background:var(--paper);box-shadow:10px 10px 0 var(--ink)}
 .calc-tabs{display:flex;border-bottom:3px solid var(--ink)}
 .calc-tabs button{flex:1;padding:18px 6px;border:0;border-right:1px solid var(--ink);background:var(--paper);font-weight:900;font-size:16px;cursor:pointer;transition:.15s}
@@ -453,6 +467,9 @@ h1,h2,h3{margin:0}
   .values{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
   .values article{width:auto;aspect-ratio:auto;padding:22px 18px;margin:0;border-radius:60px}
   .koya-card{max-width:320px;margin:auto}
+  .koya-card img{padding:20px 16px 6px}
+  .two-person{padding:14px 16px;gap:10px;font-size:13.5px;box-shadow:4px 4px 0 var(--yellow)}
+  .two-person b{font-size:13px;padding:6px 12px}
   .trust-grid{grid-template-columns:1fr}
   .trust-grid li{padding:30px 22px;border-left:0;border-top:1px solid rgba(255,255,255,.2)}
   .trust-grid li:first-child{border-top:0}
