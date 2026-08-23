@@ -118,49 +118,86 @@
   tabs.forEach(b => b.addEventListener('click', () => render(Number(b.dataset.pyeong))));
   render(15);
 
-  /* ---------- 상담 신청 ----------
-     별도 서버가 없으므로 메일 클라이언트로 전달합니다.
-     실제 운영 시 action 을 폼 수집 서비스(구글폼/Formspree 등)로 교체하세요. */
-  const MAIL_TO = 'illetta@naver.com';
+  /* ===========================================================
+     상담 신청 접수
+     ───────────────────────────────────────────────────────────
+     ▼ 여기에 구글 앱스 스크립트 웹앱 주소를 붙여넣으면 접수가 시작됩니다.
+       (설정 방법은 바탕화면 '상담폼설정' 폴더의 안내 파일 참고)
+       주소를 넣기 전까지는 메일 앱으로 대체 전송됩니다.
+     =========================================================== */
+  const FORM_ENDPOINT = '';                     // 예) 'https://script.google.com/macros/s/AKfy.../exec'
+  const MAIL_TO = 'illetta@naver.com';          // 대체 수단
 
-  function sendInquiry(data, msgEl) {
+  const MSG = {
+    need: '이름과 연락처를 입력해 주세요.',
+    agree: '개인정보 수집 및 이용에 동의해 주세요.',
+    phone: '연락처를 정확히 입력해 주세요.',
+    sending: '접수 중입니다…',
+    done: '상담 신청이 접수되었습니다. 담당자가 곧 연락드리겠습니다.',
+    fail: '접수에 실패했습니다. 1668-5236으로 전화 주시면 바로 도와드리겠습니다.',
+    mail: '메일 앱으로 상담 내용을 전달했습니다. 전송이 어려우시면 1668-5236으로 전화 주세요.'
+  };
+
+  const say = (el, text, ok) => {
+    if (!el) { if (!ok) alert(text); return; }
+    el.textContent = text;
+    el.classList.toggle('ok', !!ok);
+  };
+
+  function toMail(data) {
     const lines = [
-      `이름: ${data.name || '-'}`,
-      `나이: ${data.age || '-'}`,
-      `연락처: ${data.phone || '-'}`,
-      `오픈 희망지역: ${data.area || '-'}`,
-      `창업 예산: ${data.budget || '-'}`,
-      `희망 평수: ${data.size || '-'}`,
-      `유입경로: ${data.route || '-'}`,
-      `문의 내용: ${data.memo || '-'}`
+      `이름: ${data.name || '-'}`, `나이: ${data.age || '-'}`,
+      `연락처: ${data.phone || '-'}`, `오픈 희망지역: ${data.area || '-'}`,
+      `창업 예산: ${data.budget || '-'}`, `희망 평수: ${data.size || '-'}`,
+      `유입경로: ${data.route || '-'}`, `문의 내용: ${data.memo || '-'}`
     ].join('\n');
-    const subject = `[나베야 창업상담] ${data.name || ''} / ${data.area || ''}`;
-    location.href = `mailto:${MAIL_TO}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`;
-    if (msgEl) {
-      msgEl.textContent = '메일 앱으로 상담 내용을 전달했습니다. 전송이 어려우시면 1668-5236으로 전화 주세요.';
-      msgEl.classList.add('ok');
-    }
+    location.href = `mailto:${MAIL_TO}`
+      + `?subject=${encodeURIComponent(`[나베야 창업상담] ${data.name || ''} / ${data.area || ''}`)}`
+      + `&body=${encodeURIComponent(lines)}`;
   }
 
   function bindForm(form, msgEl) {
-    form.addEventListener('submit', e => {
+    if (!form) return;
+    const btn = form.querySelector('button[type=submit]');
+    form.addEventListener('submit', async e => {
       e.preventDefault();
+      if (form.dataset.sending === '1') return;              // 중복 전송 방지
+
       const data = Object.fromEntries(new FormData(form).entries());
-      if (!data.name || !data.phone) {
-        if (msgEl) { msgEl.textContent = '이름과 연락처를 입력해 주세요.'; msgEl.classList.remove('ok'); }
-        else alert('이름과 연락처를 입력해 주세요.');
-        return;
+      if (data.company) return;                              // 허니팟: 봇이면 조용히 무시
+      if (!data.name || !data.phone) return say(msgEl, MSG.need);
+      if (data.phone.replace(/\D/g, '').length < 9) return say(msgEl, MSG.phone);
+      if (!data.agree) return say(msgEl, MSG.agree);
+
+      delete data.company;
+      data.신청경로 = form.id === 'quickBar' ? '하단 빠른문의' : '상담 폼';
+      data.페이지 = location.href;
+
+      if (!FORM_ENDPOINT) { toMail(data); return say(msgEl, MSG.mail, true); }
+
+      form.dataset.sending = '1';
+      if (btn) { btn.dataset.label = btn.textContent; btn.textContent = '접수 중…'; btn.disabled = true; }
+      say(msgEl, MSG.sending);
+
+      try {
+        // 구글 앱스 스크립트는 CORS 사전요청을 받지 않으므로 단순 요청으로 보냅니다.
+        await fetch(FORM_ENDPOINT, {
+          method: 'POST', mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(data)
+        });
+        say(msgEl, MSG.done, true);
+        form.reset();
+      } catch (err) {
+        say(msgEl, MSG.fail);
+      } finally {
+        form.dataset.sending = '0';
+        if (btn) { btn.textContent = btn.dataset.label; btn.disabled = false; }
       }
-      if (!data.agree) {
-        if (msgEl) { msgEl.textContent = '개인정보 수집 및 이용에 동의해 주세요.'; msgEl.classList.remove('ok'); }
-        else alert('개인정보 수집 및 이용에 동의해 주세요.');
-        return;
-      }
-      sendInquiry(data, msgEl);
     });
   }
   bindForm(document.getElementById('applyForm'), document.getElementById('formMsg'));
-  bindForm(document.getElementById('quickBar'), null);
+  bindForm(document.getElementById('quickBar'), document.getElementById('quickMsg'));
 
   /* ---------- 진입 팝업 ---------- */
   const popup = document.getElementById('popup');
