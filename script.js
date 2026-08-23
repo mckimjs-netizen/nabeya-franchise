@@ -220,9 +220,18 @@
     setTimeout(() => { popup.hidden = false; }, 900);
   }
   const closePopup = () => { popup.hidden = true; };
-  /* 팝업 카드가 여러 장이므로 닫기 계열 버튼을 모두 연결합니다 */
-  popup.querySelectorAll('.popup-x,[data-close],.popup-cta')
-       .forEach(el => el.addEventListener('click', closePopup));
+  const boxes = [...popup.querySelectorAll('.popup-box')];
+  /* 카드는 한 장씩 닫습니다. 남은 카드가 없으면 배경까지 걷어냅니다.
+     좁은 화면에서는 창업비용 카드가 CSS 로 감춰지므로 hidden 속성이 아니라
+     실제로 그려지고 있는지를 봐야 합니다. */
+  const closeCard = box => {
+    box.hidden = true;
+    if (!boxes.some(b => !b.hidden && b.offsetParent)) closePopup();
+  };
+  boxes.forEach(box => box.querySelectorAll('.popup-x,[data-close]')
+       .forEach(el => el.addEventListener('click', () => closeCard(box))));
+  /* 버튼을 눌러 페이지 안으로 이동할 때와 '오늘 하루 보지 않기' 는 전체를 닫습니다 */
+  popup.querySelectorAll('.popup-cta').forEach(el => el.addEventListener('click', closePopup));
   popup.querySelectorAll('[data-today]').forEach(el => el.addEventListener('click', () => {
     localStorage.setItem(KEY, String(Date.now() + 86400000));
     closePopup();

@@ -393,7 +393,7 @@ h1,h2,h3{margin:0}
 /* ---------- 진입 팝업 ---------- */
 .popup{position:fixed;z-index:300;inset:0;background:rgba(24,18,16,.72);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
 .popup-stack{display:flex;gap:24px;align-items:flex-start;max-width:100%;margin:auto}
-.popup[hidden]{display:none}
+.popup[hidden],.popup-box[hidden]{display:none}
 .popup-box{position:relative;width:420px;max-width:100%;background:var(--ivory);border:3px solid var(--ink);box-shadow:12px 12px 0 var(--red);padding:38px 32px 0;text-align:center}
 .popup-x{position:absolute;right:10px;top:6px;border:0;background:none;font-size:30px;cursor:pointer;line-height:1}
 .popup-kicker{margin:0;font:400 12px var(--serif);letter-spacing:.08em;color:#7a6f6a}
