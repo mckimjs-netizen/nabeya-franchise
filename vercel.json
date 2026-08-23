@@ -1,4 +1,16 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/default/02/03.php", "destination": "/#cost", "permanent": true },
+    { "source": "/default/02/02.php", "destination": "/#cost", "permanent": true },
+    { "source": "/default/02/04.php", "destination": "/#process", "permanent": true },
+    { "source": "/default/02/:path*", "destination": "/#cost", "permanent": true },
+    { "source": "/default/03/:path*", "destination": "/#menu", "permanent": true },
+    { "source": "/default/01/:path*", "destination": "/#story", "permanent": true },
+    { "source": "/default/05/:path*", "destination": "/#apply", "permanent": true },
+    { "source": "/default/member/:path*", "destination": "/#apply", "permanent": false },
+    { "source": "/default/:path*", "destination": "/", "permanent": true },
+    { "source": "/default", "destination": "/", "permanent": true }
+  ]
 }
