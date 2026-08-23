@@ -88,7 +88,7 @@ h1,h2,h3{margin:0}
 .btn-ghost{background:transparent;color:#fff;border-color:#fff}
 .btn-ghost:hover{background:#fff;color:var(--ink)}
 .hero-facts{display:flex;align-items:center;gap:34px;margin:0;padding:22px 0 0;list-style:none;border-top:1px solid rgba(255,255,255,.28)}
-.hero-facts b{display:block;font:700 34px var(--latin);color:var(--yellow);line-height:1.1}
+.hero-facts b{display:block;font:700 34px var(--latin);color:var(--yellow);line-height:1.1;white-space:nowrap}
 .hero-facts b span{font-size:15px;margin-left:3px}
 .hero-facts>li>span{font-size:12px;color:#dbcfc0}
 /* 숫자가 아닌 문구형 지표 — 한글에 맞춰 명조체·크기 조정 */
@@ -454,11 +454,11 @@ h1,h2,h3{margin:0}
   .hero-sub{font-size:15px}
   .hero-cta{gap:8px;margin:26px 0 32px}
   .btn-primary,.btn-ghost{flex:1;gap:8px;justify-content:center;padding:15px 10px;font-size:13.5px;white-space:nowrap}
-  .hero-facts{gap:14px}
+  .hero-facts{gap:12px 14px;flex-wrap:wrap}  /* 좁은 화면에서는 세 칸이 줄바꿈되도록 */
   .hero-facts b{font-size:21px}
   .hero-facts .fact-text{padding:9px 13px;margin:-9px 0;box-shadow:4px 4px 0 rgba(0,0,0,.4)}
   .hero-facts .fact-text b{font-size:18px}
-  .hero-facts>li>span{font-size:11px}
+  .hero-facts>li>span{font-size:11px;white-space:nowrap}
   .hero-seal{display:none}
   .ticker div{font-size:15px}
   .ticker span{font-size:19px;margin:0 18px}
