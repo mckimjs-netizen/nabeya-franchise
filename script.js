@@ -218,13 +218,13 @@
     setTimeout(() => { popup.hidden = false; }, 900);
   }
   const closePopup = () => { popup.hidden = true; };
-  popup.querySelector('.popup-x').addEventListener('click', closePopup);
-  popup.querySelector('[data-close]').addEventListener('click', closePopup);
-  popup.querySelector('.popup-cta').addEventListener('click', closePopup);
-  popup.querySelector('[data-today]').addEventListener('click', () => {
+  /* 팝업 카드가 여러 장이므로 닫기 계열 버튼을 모두 연결합니다 */
+  popup.querySelectorAll('.popup-x,[data-close],.popup-cta')
+       .forEach(el => el.addEventListener('click', closePopup));
+  popup.querySelectorAll('[data-today]').forEach(el => el.addEventListener('click', () => {
     localStorage.setItem(KEY, String(Date.now() + 86400000));
     closePopup();
-  });
+  }));
   popup.addEventListener('click', e => { if (e.target === popup) closePopup(); });
   addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;

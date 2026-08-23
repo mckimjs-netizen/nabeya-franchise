@@ -459,16 +459,40 @@
 
 <!-- ===== 진입 팝업 ===== -->
 <div class="popup" id="popup" hidden>
-  <div class="popup-box" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
-    <button type="button" class="popup-x" aria-label="팝업 닫기">×</button>
-    <p class="popup-kicker">SINCE 2004 · K-나베의 元祖</p>
-    <h2 id="popupTitle">나베야 창업비용<br><span>전 항목 공개</span></h2>
-    <div class="popup-num"><b>9,550</b><i>만원</i></div>
-    <p class="popup-sub">15평 기준 · 가맹비 500 + 교육비 500 + 물류보증금 300<br>+ 점포 개설비 8,250 <em>(부가세 · 점포 임차비 별도)</em></p>
-    <a class="popup-cta" href="#cost">항목별로 확인하기</a>
-    <div class="popup-foot">
-      <button type="button" data-today>오늘 하루 보지 않기</button>
-      <button type="button" data-close>닫기</button>
+  <div class="popup-stack" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+
+    <!-- 오픈 예정 — PC·모바일 공통. 매장이 문을 열면 해당 줄만 지우면 됩니다. -->
+    <div class="popup-box">
+      <button type="button" class="popup-x" aria-label="팝업 닫기">×</button>
+      <p class="popup-kicker">NABEYA · OPENING SOON</p>
+      <h2 id="popupTitle">오픈 예정<br><span>6개 매장</span></h2>
+      <div class="op-grid">
+        <div><i>9월 말</i><b>여의도점</b></div>
+        <div><i>10월 초</i><b>고대 안암점</b></div>
+        <div><i>10월 중순</i><b>주엽점</b></div>
+        <div><i>10월 말</i><b>분당 정자점</b></div>
+        <div><i>11월 초</i><b>분당 판교점</b></div>
+        <div><i>11월 말</i><b>용인 수지구청점</b></div>
+      </div>
+      <p class="op-note">계약이 확정된 매장 기준입니다. 상권은 조기 마감될 수 있습니다.</p>
+      <a class="popup-cta" href="#apply">내 지역 상권 확인하기</a>
+      <div class="popup-foot">
+        <button type="button" data-today>오늘 하루 보지 않기</button>
+        <button type="button" data-close>닫기</button>
+      </div>
+    </div>
+
+    <!-- 창업비용 — 두 개를 나란히 놓을 수 있는 넓은 화면에서만 노출 -->
+    <div class="popup-box popup-cost">
+      <button type="button" class="popup-x" aria-label="팝업 닫기">×</button>
+      <p class="popup-kicker">SINCE 2004 · K-나베의 元祖</p>
+      <h2>나베야 창업비용<br><span>전 항목 공개</span></h2>
+      <div class="popup-num"><b>9,550</b><i>만원</i></div>
+      <p class="popup-sub">15평 기준 · 가맹비 500 + 교육비 500 + 물류보증금 300<br>+ 점포 개설비 8,250 <em>(부가세 · 점포 임차비 별도)</em></p>
+      <a class="popup-cta" href="#cost">항목별로 확인하기</a>
+      <div class="popup-foot">
+        <button type="button" data-close>닫기</button>
+      </div>
     </div>
   </div>
 </div>
