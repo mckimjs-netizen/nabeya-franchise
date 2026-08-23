@@ -64,6 +64,17 @@
     header.classList.toggle('scrolled', scrollY > 30);
   }, { passive: true });
 
+  /* ---------- 맨 위로 ----------
+     고정 헤더에 앵커가 걸려 있으면 브라우저가 스크롤하지 않으므로 직접 처리합니다. */
+  document.querySelectorAll('a[href="#top"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
+      history.replaceState(null, '', location.pathname + location.search);
+    });
+  });
+
   /* ---------- 모바일 메뉴 ---------- */
   const menu = document.getElementById('mobileMenu');
   const toggle = document.querySelector('.nav-toggle');
