@@ -159,6 +159,22 @@ h1,h2,h3{margin:0}
 .craft-extra{margin:22px 0 0;font-size:12px;line-height:1.9;color:#a99c92}
 .craft-extra b{color:var(--yellow)}
 
+/* ---------- 대표 이력 ---------- */
+.credentials{padding:110px 5vw;background:var(--paper);border-top:3px solid var(--ink)}
+.cred-grid{
+  max-width:1360px;margin:auto;padding:0;list-style:none;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:22px;
+}
+.cred-grid figure{margin:0;display:flex;flex-direction:column;height:100%}
+.cred-grid img{
+  width:100%;height:250px;object-fit:contain;object-position:center;
+  padding:12px;background:#fff;border:2px solid var(--ink);
+}
+.cred-grid figcaption{padding:13px 4px 0;display:flex;flex-direction:column;gap:3px}
+.cred-grid b{font:700 14.5px/1.45 'Noto Sans KR';letter-spacing:-.02em}
+.cred-grid span{font-size:11.5px;color:#8b8079;font-family:var(--latin);letter-spacing:.01em}
+.cred-note{max-width:1360px;margin:30px auto 0;font-size:12px;color:#9c918a}
+
 /* ---------- 창업비용 ---------- */
 .cost{padding:110px 5vw;background:var(--ivory)}
 .cost .section-head>p b{background:linear-gradient(transparent 62%,var(--yellow) 62%)}
@@ -419,7 +435,11 @@ h1,h2,h3{margin:0}
   .ticker span{font-size:19px;margin:0 18px}
   .section-head{display:block;margin-bottom:34px}
   .section-head>p{margin-top:16px;font-size:14px}
-  .story,.menu,.cost,.process,.faq,.posters{padding:70px 20px}
+  .story,.menu,.cost,.process,.faq,.posters,.credentials{padding:70px 20px}
+  .cred-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .cred-grid img{height:190px;padding:8px}
+  .cred-grid b{font-size:13px}
+  .cred-grid span{font-size:11px}
   .story-grid{grid-template-columns:minmax(0,1fr);gap:46px}
   .story-grid>*{min-width:0}
   .story h2{font-size:64px}
