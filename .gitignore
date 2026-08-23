@@ -8,6 +8,9 @@ assets/*
 assets/brand/*
 !assets/brand/*.webp
 !assets/brand/*.mp4
+!assets/brand/favicon-*.png
+!assets/brand/apple-touch-icon.png
+!assets/brand/icon-512.png
 !assets/brand/cert/
 !assets/brand/cert/*.webp
 
