@@ -212,7 +212,9 @@
 
   /* ---------- 진입 팝업 ---------- */
   const popup = document.getElementById('popup');
-  const KEY = 'nabeya-popup-hidden-until';
+  /* 팝업 내용을 바꾸면 뒤 번호를 올립니다. 예전에 '오늘 하루 보지 않기' 를
+     누른 방문자에게도 새 소식이 한 번은 보이게 하기 위해서입니다. */
+  const KEY = 'nabeya-popup-hidden-until-2';
   const hiddenUntil = Number(localStorage.getItem(KEY) || 0);
   if (Date.now() > hiddenUntil) {
     setTimeout(() => { popup.hidden = false; }, 900);
