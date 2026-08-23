@@ -4,4 +4,4 @@ Allow: /
 User-agent: Yeti
 Allow: /
 
-Sitemap: https://nabeya-franchise.vercel.app/sitemap.xml
+Sitemap: https://www.nabeya.co.kr/sitemap.xml
