@@ -121,11 +121,11 @@
   /* ===========================================================
      상담 신청 접수
      ───────────────────────────────────────────────────────────
-     ▼ 여기에 구글 앱스 스크립트 웹앱 주소를 붙여넣으면 접수가 시작됩니다.
-       (설정 방법은 바탕화면 '상담폼설정' 폴더의 안내 파일 참고)
-       주소를 넣기 전까지는 메일 앱으로 대체 전송됩니다.
+     구글 시트 「나베야 창업상담」의 Apps Script 웹앱으로 접수됩니다.
+     접수 내용은 시트의 「상담신청」 탭에 쌓이고, illetta@naver.com 으로 알림이 갑니다.
+     주소를 비우면 메일 앱으로 대체 전송됩니다.
      =========================================================== */
-  const FORM_ENDPOINT = '';                     // 예) 'https://script.google.com/macros/s/AKfy.../exec'
+  const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz6-I22NaWgGANzp5c00Z8raDjX0BxDaXsg3HUInHcY_9uFR9K4T_wf6yht_GhJZNWh0g/exec';
   const MAIL_TO = 'illetta@naver.com';          // 대체 수단
 
   const MSG = {
