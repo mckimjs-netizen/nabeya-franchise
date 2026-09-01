@@ -428,14 +428,24 @@ h1,h2,h3{margin:0}
 .kw-cert{margin:11px 0 0;padding-top:10px;border-top:1px dashed rgba(60,55,54,.35);
   font:400 11px/1.6 'Noto Sans KR',sans-serif;color:#7a6f6a}
 .kw-quote{margin:9px 0 15px;font:700 14.5px var(--serif);letter-spacing:-.03em;color:var(--red)}
-/* 두 장을 나란히 놓을 수 없는 폭에서는 오픈 예정만 남깁니다 */
-@media(max-width:960px){.popup-kimchi{display:none}}
+/* 두 장을 나란히 놓을 수 없는 폭에서는 옆으로 밀어 보게 합니다.
+   다음 카드가 살짝 걸쳐 보이도록 폭을 잡아, 넘길 수 있다는 걸 알 수 있게 했습니다. */
+@media(max-width:960px){
+  .popup{padding:20px 0}
+  .popup-stack{
+    display:flex;align-items:flex-start;gap:12px;width:100%;max-width:100%;padding:0 24px;
+    overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+  }
+  .popup-box{flex:0 0 min(420px,calc(100vw - 72px));scroll-snap-align:center}
+  .popup-foot{margin-top:0}
+}
 /* 아주 좁은 화면에서 긴 매장명이 갈라지지 않도록 */
 @media(max-width:380px){
   .popup-box{padding-left:22px;padding-right:22px}
   .popup-foot{margin-left:-22px;margin-right:-22px}
   .op-grid div{padding:10px 6px}
   .op-grid b{font-size:13.5px;letter-spacing:-.06em}
+  .kw-photo{width:calc(100% + 44px);margin:0 -22px}
 }
 
 /* ---------- 스크롤 등장 ---------- */
