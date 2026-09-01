@@ -414,7 +414,9 @@ h1,h2,h3{margin:0}
 /* 100% 국산김치 카드 — 포스터의 사진만 쓰고 글씨는 웹으로 다시 짭니다
    (인쇄용 원본을 그대로 줄이면 작은 글씨를 읽을 수 없습니다) */
 .popup-kimchi h2{margin-bottom:12px;font-size:26px}
-.kw-photo{display:block;width:calc(100% + 64px);margin:0 -32px;height:auto}
+/* 카드 좌우 끝까지 꽉 채웁니다. 전역 img{max-width:100%} 가 폭을 눌러
+   왼쪽으로 밀리므로 이 사진만 해제합니다. */
+.kw-photo{display:block;width:calc(100% + 64px);max-width:none;margin:0 -32px;height:auto}
 .kw-claim{margin:13px 0 0;padding:9px 10px;border:2px solid var(--ink);
   font:400 13.5px/1.4 var(--serif);letter-spacing:-.02em}
 .kw-claim b{font:700 18px var(--latin);color:var(--red);margin-right:3px}
