@@ -222,7 +222,7 @@
   const closePopup = () => { popup.hidden = true; };
   const boxes = [...popup.querySelectorAll('.popup-box')];
   /* 카드는 한 장씩 닫습니다. 남은 카드가 없으면 배경까지 걷어냅니다.
-     좁은 화면에서는 창업비용 카드가 CSS 로 감춰지므로 hidden 속성이 아니라
+     화면 폭에 따라 CSS 로 감춰지는 카드가 생길 수 있으므로 hidden 속성이 아니라
      실제로 그려지고 있는지를 봐야 합니다. */
   const closeCard = box => {
     box.hidden = true;
