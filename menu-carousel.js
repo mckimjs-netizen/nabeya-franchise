@@ -43,7 +43,7 @@
   function schedule() {
     stopTimer();
     if (paused || hovering || focused || !visible || document.hidden || moving || gesture) return;
-    timer = setTimeout(() => move(1, false), 3000);
+    timer = setTimeout(() => move(1, false), 1000);
   }
   function paint(animate = false, offset = 0) {
     track.style.transition = animate && !reduce.matches ? 'transform 800ms cubic-bezier(.22,.61,.36,1)' : 'none';
