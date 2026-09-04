@@ -147,6 +147,56 @@ h1,h2,h3{margin:0}
 .menu-card h3{margin:8px 0 6px;font:700 clamp(24px,2.4vw,38px)/1.15 var(--serif);letter-spacing:-.04em}
 .menu-card p{margin:0;font-size:13px;color:#e6dbcd}
 
+/* 자동 슬라이드: JS가 없으면 기존 격자로 모든 메뉴를 표시합니다. */
+.menu-carousel{max-width:1360px;margin:auto;min-width:0}
+.menu-viewport{outline-offset:7px}
+.menu-carousel.is-ready .menu-viewport{overflow:hidden;touch-action:pan-y pinch-zoom;cursor:grab}
+.menu-carousel.is-ready .menu-track{display:flex;gap:20px;max-width:none;will-change:transform}
+.menu-carousel.is-ready .menu-card{flex:0 0 calc((100% - 40px)/3);min-width:0;aspect-ratio:4/4.7;user-select:none}
+.menu-carousel.is-ready .menu-card img{pointer-events:none;-webkit-user-drag:none}
+.menu-carousel.is-ready .menu-card>div{left:24px;right:22px;bottom:26px}
+.menu-carousel.is-ready .menu-card::after{inset:32% 0 0;background:linear-gradient(transparent,rgba(15,10,8,.94))}
+.menu-carousel.is-ready .menu-card small{font-size:12px}
+.menu-carousel.is-ready .menu-card h3{font-size:clamp(25px,2.3vw,34px);line-height:1.3;word-break:keep-all}
+.menu-carousel.is-ready .menu-card p{font-size:15px;line-height:1.65;word-break:keep-all}
+.menu-carousel.is-dragging .menu-viewport{cursor:grabbing}
+.menu-carousel.is-dragging .menu-card img{transform:none}
+.menu-controls{display:flex;align-items:center;gap:28px;margin-top:28px}
+.menu-controls[hidden]{display:none}
+.menu-position{display:flex;align-items:center;gap:15px;flex:1;max-width:320px;font:600 14px var(--latin);font-variant-numeric:tabular-nums}
+.menu-current{color:var(--red)}
+.menu-total{opacity:.6}
+.menu-progress{display:block;flex:1;height:3px;overflow:hidden;background:rgba(60,55,54,.18)}
+.menu-progress i{display:block;width:100%;height:100%;background:var(--red);transform:scaleX(.111111);transform-origin:left;transition:transform .8s ease}
+.menu-hint{margin:0 auto 0 0;font-size:14px;color:#71665f}
+.menu-buttons{display:flex;align-items:center;gap:10px;margin-left:auto}
+.menu-buttons button{height:48px;min-width:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--ink);background:transparent;cursor:pointer;transition:background .2s,color .2s}
+.menu-buttons .menu-play{padding:0 15px;font-size:14px;min-width:114px}
+.menu-prev span,.menu-next span{font-size:25px;line-height:1}
+.menu-buttons button:hover{background:var(--ink);color:var(--paper)}
+.menu-buttons button:focus-visible,.menu-viewport:focus-visible{outline:3px solid var(--red);outline-offset:4px}
+@media(max-width:1100px) and (min-width:901px){
+  .menu-carousel.is-ready .menu-card{flex-basis:calc((100% - 20px)/2.15)}
+  .menu-hint{display:none}
+}
+@media(max-width:900px){
+  .menu-carousel.is-ready .menu-track{gap:14px}
+  .menu-carousel.is-ready .menu-viewport{margin-right:-20px}
+  .menu-carousel.is-ready .menu-card{flex-basis:82%;aspect-ratio:4/4.7}
+  .menu-carousel.is-ready .menu-card>div{left:20px;right:18px;bottom:22px}
+  .menu-carousel.is-ready .menu-card h3{font-size:clamp(25px,4.5vw,34px)}
+  .menu-carousel.is-ready .menu-card p{font-size:14px}
+  .menu-controls{flex-wrap:wrap;gap:18px;margin-top:22px}
+  .menu-position{max-width:none;flex-basis:100%}
+  .menu-hint{font-size:13px}
+  .menu-buttons{gap:7px}
+  .menu-buttons .menu-play{min-width:104px;padding:0 10px}
+}
+@media(max-width:380px){.menu-hint{display:none}}
+@media(prefers-reduced-motion:reduce){
+  .menu-carousel .menu-track,.menu-carousel .menu-card img,.menu-progress i{transition:none!important}
+}
+
 /* ---------- 재료 기준 ---------- */
 .craft{display:grid;grid-template-columns:1.1fr .9fr;border-top:3px solid var(--ink);border-bottom:3px solid var(--ink)}
 .craft-image{overflow:hidden;min-height:560px}

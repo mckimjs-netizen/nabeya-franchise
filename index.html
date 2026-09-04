@@ -130,11 +130,13 @@
   <!-- ===== 메뉴 ===== -->
   <section class="menu" id="menu">
     <div class="section-head">
-      <div><p class="kicker">02 · SIGNATURE MENU</p><h2>원조의 한 그릇</h2></div>
+      <div><p class="kicker">02 · SIGNATURE MENU</p><h2 id="menu-title">원조의 한 그릇</h2></div>
       <p>뜨끈한 나베부터 바삭한 돈까스까지,<br>20여 년을 지켜온 나베야의 대표 메뉴입니다.</p>
     </div>
-    <div class="menu-grid">
-      <article class="menu-card big">
+    <div class="menu-carousel" role="region" aria-roledescription="캐러셀" aria-labelledby="menu-title">
+    <div class="menu-viewport" id="menu-viewport" tabindex="0" aria-label="메뉴 목록. 좌우 방향키로 넘길 수 있습니다.">
+    <div class="menu-grid menu-track">
+      <article class="menu-card">
         <img src="assets/brand/kimchi-nabe.webp" alt="평창 김치 나베" width="1400" height="1190" loading="lazy">
         <div><small>BEST · 대표메뉴</small><h3>평창 김치 나베</h3><p>식품 명인이 만든 100% 국산김치, 1,440시간 발효</p></div>
       </article>
@@ -171,14 +173,26 @@
         <div><small>NEW · 여름별미</small><h3>냉우동</h3><p>국내산 새우를 통째로 튀겨 올린</p></div>
       </article>
     </div>
+    </div>
+    <div class="menu-controls" hidden>
+      <div class="menu-position"><span class="menu-current">01</span><span class="menu-progress" aria-hidden="true"><i></i></span><span class="menu-total">09</span></div>
+      <p class="menu-hint">옆으로 넘겨 만나보세요</p>
+      <div class="menu-buttons">
+        <button type="button" class="menu-prev" aria-label="이전 메뉴" aria-controls="menu-viewport"><span aria-hidden="true">←</span></button>
+        <button type="button" class="menu-play" aria-label="메뉴 자동 넘김 정지"><span class="menu-play-icon" aria-hidden="true">Ⅱ</span><span class="menu-play-text">일시정지</span></button>
+        <button type="button" class="menu-next" aria-label="다음 메뉴" aria-controls="menu-viewport"><span aria-hidden="true">→</span></button>
+      </div>
+    </div>
+    <p class="sr-only menu-announcement" aria-live="polite" aria-atomic="true"></p>
+    </div>
   </section>
 
   <!-- ===== 재료 기준 ===== -->
-  <section class="craft">
+  <section class="craft" id="craft">
     <div class="craft-image"><img src="assets/brand/craft-pan.webp" alt="불 위에서 끓고 있는 나베야 돈까스 나베" width="1500" height="1515" loading="lazy"></div>
     <div class="craft-copy">
       <p class="kicker yellow">03 · THE NABEYA STANDARD</p>
-      <h2>20여 년의 정성,<br><em>나베야의 기준.</em></h2>
+      <h2>100만그릇이 증명한 맛<br><em>평창김치나베</em></h2>
       <p class="craft-lead">좋은 재료로 맛을 내고 정성으로 완성합니다.<br>변하지 않는 기본이 나베야의 맛을 만듭니다.</p>
       <ul class="craft-pillars">
         <li>
@@ -522,5 +536,6 @@
 </div>
 
 <script src="script.js"></script>
+<script src="menu-carousel.js"></script>
 </body>
 </html>

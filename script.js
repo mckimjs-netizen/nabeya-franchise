@@ -244,7 +244,7 @@
   });
 
   /* ---------- 스크롤 등장 (실패해도 콘텐츠는 항상 보이도록) ---------- */
-  const targets = document.querySelectorAll('.story-grid,.trust-grid li,.menu-card,.craft-copy,.calc,.cost-table,.cost-guide,.royalty-copy,.royalty-chart,.steps li,.poster-wall img,.faq-list,.apply-copy,.apply-form');
+  const targets = document.querySelectorAll('.story-grid,.trust-grid li,.craft-copy,.calc,.cost-table,.cost-guide,.royalty-copy,.royalty-chart,.steps li,.poster-wall img,.faq-list,.apply-copy,.apply-form');
   if ('IntersectionObserver' in window) {
     targets.forEach(t => t.classList.add('reveal'));
     const io = new IntersectionObserver((entries, obs) => {
