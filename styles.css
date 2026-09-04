@@ -87,7 +87,7 @@ h1,h2,h3{margin:0}
 .btn-primary:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--yellow)}
 .btn-ghost{background:transparent;color:#fff;border-color:#fff}
 .btn-ghost:hover{background:#fff;color:var(--ink)}
-.hero-facts{display:flex;align-items:center;gap:34px;margin:0;padding:22px 0 0;list-style:none;border-top:1px solid rgba(255,255,255,.28)}
+.hero-facts{display:flex;align-items:center;gap:34px;margin:0;padding:22px 0 0;list-style:none}
 .hero-facts b{display:block;font:700 34px var(--latin);color:var(--yellow);line-height:1.1;white-space:nowrap}
 .hero-facts b span{font-size:15px;margin-left:3px}
 .hero-facts>li>span{font-size:12px;color:#dbcfc0}
