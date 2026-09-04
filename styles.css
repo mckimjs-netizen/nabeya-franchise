@@ -103,7 +103,9 @@ h1,h2,h3{margin:0}
 
 /* ---------- 티커 ---------- */
 .ticker{overflow:hidden;background:var(--yellow);border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);white-space:nowrap}
-.ticker div{width:max-content;padding:14px 0;font:800 22px var(--latin);animation:ticker 26s linear infinite}
+.ticker-track{display:flex;width:max-content;padding:14px 0;font:800 22px var(--latin);animation:ticker 52s linear infinite}
+.ticker-group{display:flex;align-items:center;justify-content:space-around;flex:0 0 auto;min-width:100vw}
+.ticker-group p{flex:0 0 auto;margin:0;white-space:nowrap}
 .ticker span{color:var(--red);font-size:28px;margin:0 30px}
 .ticker i{font-style:normal;margin:0 22px}
 @keyframes ticker{to{transform:translateX(-50%)}}
@@ -503,7 +505,7 @@ h1,h2,h3{margin:0}
 .reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
-  .ticker div{animation:none}
+  .ticker-track{animation:none}
   html{scroll-behavior:auto}
 }
 
@@ -550,7 +552,7 @@ h1,h2,h3{margin:0}
   .hero-facts .fact-text b{font-size:18px}
   .hero-facts>li>span{font-size:11px;white-space:nowrap}
   .hero-seal{display:none}
-  .ticker div{font-size:15px}
+  .ticker-track{font-size:15px}
   .ticker span{font-size:19px;margin:0 18px}
   .section-head{display:block;margin-bottom:34px}
   .section-head>p{margin-top:16px;font-size:14px}
