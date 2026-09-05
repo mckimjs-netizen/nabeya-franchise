@@ -13,6 +13,8 @@ assets/brand/*
 !assets/brand/icon-512.png
 !assets/brand/cert/
 !assets/brand/cert/*.webp
+!assets/reviews/
+!assets/reviews/*.png
 
 # Local/editor artifacts
 .DS_Store
