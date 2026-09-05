@@ -173,27 +173,55 @@
   const credentialSlider = document.querySelector('.cred-grid');
   if (credentialSlider) {
     const slides = [...credentialSlider.children];
+    const loopSlide = slides[0]?.cloneNode(true);
+    if (loopSlide) {
+      loopSlide.classList.add('cred-clone');
+      loopSlide.setAttribute('aria-hidden', 'true');
+      loopSlide.querySelector('img')?.setAttribute('loading', 'eager');
+      credentialSlider.append(loopSlide);
+    }
     const mobile = matchMedia('(max-width:480px)');
     const reduceMotion = matchMedia('(prefers-reduced-motion:reduce)');
     let credentialIndex = 0;
     let credentialTimer = 0;
+    let credentialResetTimer = 0;
     let credentialVisible = false;
 
     const stopCredentialSlider = () => {
       clearInterval(credentialTimer);
+      clearTimeout(credentialResetTimer);
       credentialTimer = 0;
+      credentialResetTimer = 0;
     };
     const startCredentialSlider = () => {
       stopCredentialSlider();
       if (!mobile.matches || reduceMotion.matches || !credentialVisible || document.hidden || slides.length < 2) return;
       credentialTimer = setInterval(() => {
-        credentialIndex = (credentialIndex + 1) % slides.length;
+        credentialIndex += 1;
         credentialSlider.scrollTo({ left: credentialSlider.clientWidth * credentialIndex, behavior: 'smooth' });
+        if (credentialIndex === slides.length) {
+          credentialResetTimer = setTimeout(() => {
+            credentialSlider.style.scrollBehavior = 'auto';
+            credentialSlider.scrollLeft = 0;
+            credentialIndex = 0;
+            credentialSlider.offsetHeight;
+            credentialSlider.style.scrollBehavior = '';
+          }, 520);
+        }
       }, 1000);
     };
     const syncCredentialIndex = () => {
       if (!mobile.matches || !credentialSlider.clientWidth) return;
-      credentialIndex = Math.round(credentialSlider.scrollLeft / credentialSlider.clientWidth);
+      const nextIndex = Math.round(credentialSlider.scrollLeft / credentialSlider.clientWidth);
+      if (nextIndex >= slides.length) {
+        credentialSlider.style.scrollBehavior = 'auto';
+        credentialSlider.scrollLeft = 0;
+        credentialIndex = 0;
+        credentialSlider.offsetHeight;
+        credentialSlider.style.scrollBehavior = '';
+      } else {
+        credentialIndex = Math.max(0, nextIndex);
+      }
     };
 
     credentialSlider.addEventListener('pointerdown', stopCredentialSlider, { passive: true });
