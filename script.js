@@ -169,47 +169,68 @@
   tabs.forEach(b => b.addEventListener('click', () => render(Number(b.dataset.pyeong))));
   render(15);
 
-  /* ---------- 모바일 인증서 슬라이드 ---------- */
+  /* ---------- 인증서 슬라이드: 데스크톱 연속 흐름 + 모바일 한 장씩 ---------- */
   const credentialSlider = document.querySelector('.cred-grid');
   if (credentialSlider) {
     const slides = [...credentialSlider.children];
     slides.forEach(slide => slide.querySelector('img')?.setAttribute('loading', 'eager'));
-    const loopSlide = slides[0]?.cloneNode(true);
-    if (loopSlide) {
-      loopSlide.classList.add('cred-clone');
-      loopSlide.setAttribute('aria-hidden', 'true');
-      loopSlide.querySelector('img')?.setAttribute('loading', 'eager');
-      credentialSlider.append(loopSlide);
-    }
+    slides.forEach(slide => {
+      const clone = slide.cloneNode(true);
+      clone.classList.add('cred-clone');
+      clone.setAttribute('aria-hidden', 'true');
+      clone.querySelector('img')?.setAttribute('loading', 'eager');
+      credentialSlider.append(clone);
+    });
     const mobile = matchMedia('(max-width:480px)');
     const reduceMotion = matchMedia('(prefers-reduced-motion:reduce)');
     let credentialIndex = 0;
     let credentialTimer = 0;
     let credentialResetTimer = 0;
-    let credentialVisible = false;
+    let credentialFrame = 0;
+    let credentialLastTime = 0;
 
     const stopCredentialSlider = () => {
       clearInterval(credentialTimer);
       clearTimeout(credentialResetTimer);
+      cancelAnimationFrame(credentialFrame);
       credentialTimer = 0;
       credentialResetTimer = 0;
+      credentialFrame = 0;
+    };
+    const runCredentialFlow = time => {
+      if (!credentialLastTime) credentialLastTime = time;
+      const elapsed = Math.min(time - credentialLastTime, 50);
+      credentialLastTime = time;
+      credentialSlider.scrollLeft += elapsed * .1;
+      const sequenceWidth = slides.length > 1
+        ? credentialSlider.children[slides.length].offsetLeft - credentialSlider.children[0].offsetLeft
+        : 0;
+      if (sequenceWidth && credentialSlider.scrollLeft >= sequenceWidth) {
+        credentialSlider.scrollLeft -= sequenceWidth;
+      }
+      credentialFrame = requestAnimationFrame(runCredentialFlow);
     };
     const startCredentialSlider = () => {
       stopCredentialSlider();
-      if (!mobile.matches || reduceMotion.matches || !credentialVisible || document.hidden || slides.length < 2) return;
-      credentialTimer = setInterval(() => {
-        credentialIndex += 1;
-        credentialSlider.scrollTo({ left: credentialSlider.clientWidth * credentialIndex, behavior: 'smooth' });
-        if (credentialIndex === slides.length) {
-          credentialResetTimer = setTimeout(() => {
-            credentialSlider.style.scrollBehavior = 'auto';
-            credentialSlider.scrollLeft = 0;
-            credentialIndex = 0;
-            credentialSlider.offsetHeight;
-            credentialSlider.style.scrollBehavior = '';
-          }, 380);
-        }
-      }, 700);
+      credentialLastTime = 0;
+      if (reduceMotion.matches || document.hidden || slides.length < 2) return;
+      if (mobile.matches) {
+        credentialTimer = setInterval(() => {
+          credentialIndex += 1;
+          credentialSlider.scrollTo({ left: credentialSlider.clientWidth * credentialIndex, behavior: 'smooth' });
+          if (credentialIndex === slides.length) {
+            credentialResetTimer = setTimeout(() => {
+              credentialSlider.style.scrollBehavior = 'auto';
+              credentialSlider.scrollLeft = 0;
+              credentialIndex = 0;
+              credentialSlider.offsetHeight;
+              credentialSlider.style.scrollBehavior = '';
+            }, 520);
+          }
+        }, 1000);
+      } else {
+        credentialFrame = requestAnimationFrame(runCredentialFlow);
+      }
     };
     const syncCredentialIndex = () => {
       if (!mobile.matches || !credentialSlider.clientWidth) return;
@@ -235,14 +256,79 @@
     reduceMotion.addEventListener('change', startCredentialSlider);
     document.addEventListener('visibilitychange', startCredentialSlider);
 
+    startCredentialSlider();
+  }
+
+  /* ---------- 모바일 디자인 시안 슬라이드 ---------- */
+  const posterSlider = document.querySelector('.poster-wall');
+  if (posterSlider) {
+    const posterSlides = [...posterSlider.children];
+    const posterLoopSlide = posterSlides[0]?.cloneNode(true);
+    if (posterLoopSlide) {
+      posterLoopSlide.classList.add('poster-clone');
+      posterLoopSlide.setAttribute('aria-hidden', 'true');
+      posterLoopSlide.setAttribute('loading', 'eager');
+      posterSlider.append(posterLoopSlide);
+    }
+    const posterMobile = matchMedia('(max-width:900px)');
+    const posterReduceMotion = matchMedia('(prefers-reduced-motion:reduce)');
+    let posterIndex = 0;
+    let posterTimer = 0;
+    let posterResetTimer = 0;
+    let posterVisible = false;
+
+    const posterStep = () => posterSlides.length > 1
+      ? posterSlides[1].offsetLeft - posterSlides[0].offsetLeft
+      : posterSlider.clientWidth;
+    const resetPosterPosition = () => {
+      posterSlider.style.scrollBehavior = 'auto';
+      posterSlider.scrollLeft = 0;
+      posterIndex = 0;
+      posterSlider.offsetHeight;
+      posterSlider.style.scrollBehavior = '';
+    };
+    const stopPosterSlider = () => {
+      clearInterval(posterTimer);
+      clearTimeout(posterResetTimer);
+      posterTimer = 0;
+      posterResetTimer = 0;
+    };
+    const startPosterSlider = () => {
+      stopPosterSlider();
+      if (!posterMobile.matches || posterReduceMotion.matches || !posterVisible || document.hidden || posterSlides.length < 2) return;
+      posterTimer = setInterval(() => {
+        posterIndex += 1;
+        posterSlider.scrollTo({ left: posterStep() * posterIndex, behavior: 'smooth' });
+        if (posterIndex === posterSlides.length) {
+          posterResetTimer = setTimeout(resetPosterPosition, 520);
+        }
+      }, 1000);
+    };
+    const syncPosterIndex = () => {
+      if (!posterMobile.matches || !posterStep()) return;
+      const nextIndex = Math.round(posterSlider.scrollLeft / posterStep());
+      if (nextIndex >= posterSlides.length) resetPosterPosition();
+      else posterIndex = Math.max(0, nextIndex);
+    };
+
+    posterSlider.addEventListener('pointerdown', stopPosterSlider, { passive: true });
+    posterSlider.addEventListener('pointerup', () => {
+      syncPosterIndex();
+      setTimeout(startPosterSlider, 1800);
+    }, { passive: true });
+    posterSlider.addEventListener('scrollend', syncPosterIndex, { passive: true });
+    posterMobile.addEventListener('change', startPosterSlider);
+    posterReduceMotion.addEventListener('change', startPosterSlider);
+    document.addEventListener('visibilitychange', startPosterSlider);
+
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(entries => {
-        credentialVisible = entries[0].isIntersecting;
-        startCredentialSlider();
-      }, { threshold: .2 }).observe(credentialSlider);
+        posterVisible = entries[0].isIntersecting;
+        startPosterSlider();
+      }, { threshold: .2 }).observe(posterSlider);
     } else {
-      credentialVisible = true;
-      startCredentialSlider();
+      posterVisible = true;
+      startPosterSlider();
     }
   }
 
