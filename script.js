@@ -173,6 +173,7 @@
   const credentialSlider = document.querySelector('.cred-grid');
   if (credentialSlider) {
     const slides = [...credentialSlider.children];
+    slides.forEach(slide => slide.querySelector('img')?.setAttribute('loading', 'eager'));
     const loopSlide = slides[0]?.cloneNode(true);
     if (loopSlide) {
       loopSlide.classList.add('cred-clone');
@@ -206,9 +207,9 @@
             credentialIndex = 0;
             credentialSlider.offsetHeight;
             credentialSlider.style.scrollBehavior = '';
-          }, 520);
+          }, 380);
         }
-      }, 1000);
+      }, 700);
     };
     const syncCredentialIndex = () => {
       if (!mobile.matches || !credentialSlider.clientWidth) return;

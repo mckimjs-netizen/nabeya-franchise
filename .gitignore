@@ -8,6 +8,7 @@ assets/*
 assets/brand/*
 !assets/brand/*.webp
 !assets/brand/*.mp4
+!assets/brand/mobile-menu-template.jpg
 !assets/brand/favicon-*.png
 !assets/brand/apple-touch-icon.png
 !assets/brand/icon-512.png
