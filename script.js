@@ -75,6 +75,46 @@
     });
   });
 
+  /* ---------- 개인정보 영역 이동 보정 ----------
+     하단으로 이동한 뒤 지연 로딩 이미지 때문에 문서 높이가 바뀌어도
+     개인정보 영역이 다시 화면 밖으로 밀리지 않도록 위치를 재확인합니다. */
+  const privacy = document.getElementById('privacy');
+  function scrollToPrivacy(behavior = 'auto') {
+    if (!privacy) return;
+    privacy.scrollIntoView({ block: 'start', behavior });
+
+    const startDelay = behavior === 'smooth' ? 500 : 0;
+    setTimeout(() => {
+      let lastHeight = document.documentElement.scrollHeight;
+      let stableChecks = 0;
+      let checks = 0;
+      const settle = setInterval(() => {
+        const nextHeight = document.documentElement.scrollHeight;
+        if (nextHeight !== lastHeight) {
+          privacy.scrollIntoView({ block: 'start', behavior: 'auto' });
+          lastHeight = nextHeight;
+          stableChecks = 0;
+        } else {
+          stableChecks += 1;
+        }
+        checks += 1;
+        if (stableChecks >= 6 || checks >= 30) clearInterval(settle);
+      }, 100);
+    }, startDelay);
+  }
+
+  document.querySelectorAll('a[href="#privacy"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      history.pushState(null, '', '#privacy');
+      const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+      scrollToPrivacy(smooth ? 'smooth' : 'auto');
+    });
+  });
+  if (location.hash === '#privacy') {
+    addEventListener('load', () => scrollToPrivacy('auto'), { once: true });
+  }
+
   /* ---------- 모바일 메뉴 ---------- */
   const menu = document.getElementById('mobileMenu');
   const toggle = document.querySelector('.nav-toggle');
