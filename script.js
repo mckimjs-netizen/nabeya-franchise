@@ -169,6 +169,54 @@
   tabs.forEach(b => b.addEventListener('click', () => render(Number(b.dataset.pyeong))));
   render(15);
 
+  /* ---------- 모바일 인증서 슬라이드 ---------- */
+  const credentialSlider = document.querySelector('.cred-grid');
+  if (credentialSlider) {
+    const slides = [...credentialSlider.children];
+    const mobile = matchMedia('(max-width:480px)');
+    const reduceMotion = matchMedia('(prefers-reduced-motion:reduce)');
+    let credentialIndex = 0;
+    let credentialTimer = 0;
+    let credentialVisible = false;
+
+    const stopCredentialSlider = () => {
+      clearInterval(credentialTimer);
+      credentialTimer = 0;
+    };
+    const startCredentialSlider = () => {
+      stopCredentialSlider();
+      if (!mobile.matches || reduceMotion.matches || !credentialVisible || document.hidden || slides.length < 2) return;
+      credentialTimer = setInterval(() => {
+        credentialIndex = (credentialIndex + 1) % slides.length;
+        credentialSlider.scrollTo({ left: credentialSlider.clientWidth * credentialIndex, behavior: 'smooth' });
+      }, 1000);
+    };
+    const syncCredentialIndex = () => {
+      if (!mobile.matches || !credentialSlider.clientWidth) return;
+      credentialIndex = Math.round(credentialSlider.scrollLeft / credentialSlider.clientWidth);
+    };
+
+    credentialSlider.addEventListener('pointerdown', stopCredentialSlider, { passive: true });
+    credentialSlider.addEventListener('pointerup', () => {
+      syncCredentialIndex();
+      setTimeout(startCredentialSlider, 1800);
+    }, { passive: true });
+    credentialSlider.addEventListener('scrollend', syncCredentialIndex, { passive: true });
+    mobile.addEventListener('change', startCredentialSlider);
+    reduceMotion.addEventListener('change', startCredentialSlider);
+    document.addEventListener('visibilitychange', startCredentialSlider);
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(entries => {
+        credentialVisible = entries[0].isIntersecting;
+        startCredentialSlider();
+      }, { threshold: .2 }).observe(credentialSlider);
+    } else {
+      credentialVisible = true;
+      startCredentialSlider();
+    }
+  }
+
   /* ===========================================================
      상담 신청 접수
      ───────────────────────────────────────────────────────────
