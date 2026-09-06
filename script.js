@@ -169,7 +169,7 @@
   tabs.forEach(b => b.addEventListener('click', () => render(Number(b.dataset.pyeong))));
   render(15);
 
-  /* ---------- 인증서 슬라이드: 데스크톱 연속 흐름 + 모바일 한 장씩 ---------- */
+  /* ---------- 인증서 슬라이드: 화면 크기와 관계없이 한 흐름으로 연속 이동 ---------- */
   const credentialSlider = document.querySelector('.cred-grid');
   if (credentialSlider) {
     const slides = [...credentialSlider.children];
@@ -181,82 +181,44 @@
       clone.querySelector('img')?.setAttribute('loading', 'eager');
       credentialSlider.append(clone);
     });
-    const mobile = matchMedia('(max-width:480px)');
-    const reduceMotion = matchMedia('(prefers-reduced-motion:reduce)');
-    let credentialIndex = 0;
-    let credentialTimer = 0;
-    let credentialResetTimer = 0;
-    let credentialFrame = 0;
-    let credentialLastTime = 0;
-
-    const stopCredentialSlider = () => {
-      clearInterval(credentialTimer);
-      clearTimeout(credentialResetTimer);
-      cancelAnimationFrame(credentialFrame);
-      credentialTimer = 0;
-      credentialResetTimer = 0;
-      credentialFrame = 0;
-    };
-    const runCredentialFlow = time => {
-      if (!credentialLastTime) credentialLastTime = time;
-      const elapsed = Math.min(time - credentialLastTime, 50);
-      credentialLastTime = time;
-      credentialSlider.scrollLeft += elapsed * .1;
+    const setCredentialFlow = () => {
       const sequenceWidth = slides.length > 1
         ? credentialSlider.children[slides.length].offsetLeft - credentialSlider.children[0].offsetLeft
         : 0;
-      if (sequenceWidth && credentialSlider.scrollLeft >= sequenceWidth) {
-        credentialSlider.scrollLeft -= sequenceWidth;
-      }
-      credentialFrame = requestAnimationFrame(runCredentialFlow);
+      if (!sequenceWidth || slides.length < 2) return;
+      credentialSlider.style.setProperty('--credential-loop-shift', `${-sequenceWidth}px`);
+      credentialSlider.style.setProperty('--credential-duration', `${slides.length}s`);
+      credentialSlider.classList.remove('is-flowing');
+      credentialSlider.offsetWidth;
+      credentialSlider.classList.add('is-flowing');
     };
-    const startCredentialSlider = () => {
-      stopCredentialSlider();
-      credentialLastTime = 0;
-      if (reduceMotion.matches || document.hidden || slides.length < 2) return;
-      if (mobile.matches) {
-        credentialTimer = setInterval(() => {
-          credentialIndex += 1;
-          credentialSlider.scrollTo({ left: credentialSlider.clientWidth * credentialIndex, behavior: 'smooth' });
-          if (credentialIndex === slides.length) {
-            credentialResetTimer = setTimeout(() => {
-              credentialSlider.style.scrollBehavior = 'auto';
-              credentialSlider.scrollLeft = 0;
-              credentialIndex = 0;
-              credentialSlider.offsetHeight;
-              credentialSlider.style.scrollBehavior = '';
-            }, 520);
-          }
-        }, 1000);
-      } else {
-        credentialFrame = requestAnimationFrame(runCredentialFlow);
-      }
+    let credentialPausedByUser = false;
+    const setCredentialPaused = paused => {
+      credentialPausedByUser = paused;
+      credentialSlider.classList.toggle('is-paused', paused);
+      credentialSlider.setAttribute('aria-pressed', String(paused));
+      credentialSlider.setAttribute('aria-label', paused
+        ? '나베야 대표 자격 및 수료 이력. 눌러서 슬라이드 재생'
+        : '나베야 대표 자격 및 수료 이력. 눌러서 슬라이드 정지');
     };
-    const syncCredentialIndex = () => {
-      if (!mobile.matches || !credentialSlider.clientWidth) return;
-      const nextIndex = Math.round(credentialSlider.scrollLeft / credentialSlider.clientWidth);
-      if (nextIndex >= slides.length) {
-        credentialSlider.style.scrollBehavior = 'auto';
-        credentialSlider.scrollLeft = 0;
-        credentialIndex = 0;
-        credentialSlider.offsetHeight;
-        credentialSlider.style.scrollBehavior = '';
-      } else {
-        credentialIndex = Math.max(0, nextIndex);
-      }
-    };
-
-    credentialSlider.addEventListener('pointerdown', stopCredentialSlider, { passive: true });
-    credentialSlider.addEventListener('pointerup', () => {
-      syncCredentialIndex();
-      setTimeout(startCredentialSlider, 1800);
-    }, { passive: true });
-    credentialSlider.addEventListener('scrollend', syncCredentialIndex, { passive: true });
-    mobile.addEventListener('change', startCredentialSlider);
-    reduceMotion.addEventListener('change', startCredentialSlider);
-    document.addEventListener('visibilitychange', startCredentialSlider);
-
-    startCredentialSlider();
+    credentialSlider.setAttribute('role', 'button');
+    credentialSlider.setAttribute('tabindex', '0');
+    setCredentialPaused(false);
+    credentialSlider.addEventListener('click', () => setCredentialPaused(!credentialPausedByUser));
+    credentialSlider.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      setCredentialPaused(!credentialPausedByUser);
+    });
+    const credentialObserver = new IntersectionObserver(entries => {
+      if (!entries[0]?.isIntersecting || credentialPausedByUser) return;
+      credentialSlider.classList.remove('is-paused');
+      credentialSlider.style.animationPlayState = 'running';
+    }, { threshold: 0.05 });
+    credentialObserver.observe(credentialSlider.closest('.cred-viewport'));
+    requestAnimationFrame(setCredentialFlow);
+    addEventListener('load', setCredentialFlow, { once: true });
+    addEventListener('resize', setCredentialFlow, { passive: true });
   }
 
   /* ---------- 모바일 디자인 시안 슬라이드 ---------- */
