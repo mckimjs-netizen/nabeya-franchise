@@ -376,12 +376,15 @@
   bindForm(document.getElementById('quickBar'), document.getElementById('quickMsg'));
 
   /* ---------- 진입 팝업 ---------- */
-  const popup = document.getElementById('popup');
+  const popup = document.getElementById('entryNotice');
   /* 팝업 내용을 바꾸면 뒤 번호를 올립니다. 예전에 '오늘 하루 보지 않기' 를
      누른 방문자에게도 새 소식이 한 번은 보이게 하기 위해서입니다. */
-  const KEY = 'nabeya-popup-hidden-until-2';
+  const KEY = 'nabeya-popup-hidden-until-3';
   const hiddenUntil = Number(localStorage.getItem(KEY) || 0);
-  if (Date.now() > hiddenUntil) {
+  const previewPopup = new URLSearchParams(location.search).has('previewPopup');
+  if (previewPopup) {
+    popup.hidden = false;
+  } else if (Date.now() > hiddenUntil) {
     setTimeout(() => { popup.hidden = false; }, 900);
   }
   const closePopup = () => { popup.hidden = true; };

@@ -553,16 +553,16 @@ h1,h2,h3{margin:0}
 
 /* ---------- 진입 팝업 ---------- */
 .popup{position:fixed;z-index:300;inset:0;background:rgba(24,18,16,.72);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
-.popup-stack{display:flex;gap:24px;align-items:stretch;max-width:100%;margin:auto}
+.popup-stack{display:flex;gap:24px;align-items:flex-start;max-width:100%;margin:auto}
 .popup[hidden],.popup-box[hidden]{display:none}
-.popup-box{position:relative;display:flex;flex-direction:column;width:420px;max-width:100%;background:var(--ivory);border:3px solid var(--ink);box-shadow:12px 12px 0 var(--red);padding:38px 32px 0;text-align:center}
-.popup-x{position:absolute;right:10px;top:6px;border:0;background:none;font-size:30px;cursor:pointer;line-height:1}
-.popup-kicker{margin:0;font:400 12px var(--serif);letter-spacing:.08em;color:#7a6f6a}
-.popup-box h2{margin:10px 0 18px;font:700 30px/1.3 var(--serif);letter-spacing:-.04em}
+.popup-box{position:relative;display:flex;flex-direction:column;width:430px;max-width:100%;min-height:608px;background:#fff url('assets/brand/popup-template-a3.jpg') center/100% 100% no-repeat;border:0;box-shadow:0 24px 70px rgba(0,0,0,.35),10px 10px 0 var(--red);padding:58px 50px 132px;text-align:center}
+.popup-x{position:absolute;right:32px;top:27px;width:34px;height:34px;border:1px solid rgba(60,55,54,.25);border-radius:50%;background:rgba(255,255,255,.9);color:var(--ink);font-size:25px;cursor:pointer;line-height:28px}
+.popup-kicker{margin:0;font:700 11px var(--latin);letter-spacing:.14em;color:#8a7563}
+.popup-box h2{margin:10px 0 18px;font:700 30px/1.3 var(--serif);letter-spacing:-.04em;color:var(--ink)}
 .popup-box h2 span{color:var(--red)}
-.popup-cta{display:block;margin-bottom:26px;padding:16px;background:var(--red);color:#fff;border:2px solid var(--ink);font-weight:900;box-shadow:5px 5px 0 var(--ink)}
-.popup-foot{display:flex;margin:auto -32px 0;border-top:2px solid var(--ink)}
-.popup-foot button{flex:1;padding:15px;border:0;border-right:2px solid var(--ink);background:transparent;font-size:13px;cursor:pointer}
+.popup-cta{display:block;margin:0 0 18px;padding:15px;background:var(--red);color:#fff;border:2px solid var(--ink);font-weight:900;box-shadow:5px 5px 0 var(--yellow)}
+.popup-foot{position:absolute;left:48px;right:48px;bottom:58px;display:flex;margin:0;border:1px solid rgba(60,55,54,.35);background:rgba(255,255,255,.94)}
+.popup-foot button{flex:1;padding:12px 6px;border:0;border-right:1px solid rgba(60,55,54,.35);background:transparent;font-size:12px;cursor:pointer}
 .popup-foot button:last-child{border-right:0}
 /* 오픈 예정 매장 — 카드형 */
 .op-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:16px 0 4px;
@@ -594,15 +594,15 @@ h1,h2,h3{margin:0}
   .popup{padding:20px 0}
   .popup-stack{
     display:flex;align-items:flex-start;gap:12px;width:100%;max-width:100%;padding:0 24px;
-    overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+    overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;
   }
-  .popup-box{flex:0 0 min(420px,calc(100vw - 72px));scroll-snap-align:center}
-  .popup-foot{margin-top:0}
+  .popup-stack::-webkit-scrollbar{display:none}
+  .popup-box{flex:0 0 min(430px,calc(100vw - 72px));min-height:min(608px,calc((100vw - 72px)*1.414));scroll-snap-align:center}
 }
 /* 아주 좁은 화면에서 긴 매장명이 갈라지지 않도록 */
 @media(max-width:380px){
-  .popup-box{padding-left:22px;padding-right:22px}
-  .popup-foot{margin-left:-22px;margin-right:-22px}
+  .popup-box{padding-left:38px;padding-right:38px;padding-bottom:112px}
+  .popup-foot{left:36px;right:36px;bottom:46px}
   .op-grid div{padding:10px 6px}
   .op-grid b{font-size:13.5px;letter-spacing:-.06em}
   .kw-photo{width:calc(100% + 44px);margin:0 -22px}
@@ -784,12 +784,16 @@ h1,h2,h3{margin:0}
   .quickbar-tel{background:#fff;color:var(--ink)}
   .quickbar-tel b{font:800 19px var(--latin);letter-spacing:-.02em}
   .quickbar-apply{flex:1.15;background:var(--red);color:#fff;font-size:15px}
-  .popup-box{padding:30px 22px 0}
+  .popup-box{min-height:560px;padding:44px 38px 116px}
+  .popup-x{right:25px;top:22px}
+  .popup-foot{left:36px;right:36px;bottom:50px}
+  .kw-photo{width:calc(100% + 76px);margin-left:-38px;margin-right:-38px}
   .popup-box h2{font-size:25px}
 }
 
 /* 작은 모바일 화면: 핵심 문구가 화면 밖으로 밀리거나 어색하게 한 글자씩 꺾이지 않도록 */
 @media(max-width:480px){
+  .op-grid b{font-size:13px;white-space:nowrap}
   .hero-copy{padding-left:18px;padding-right:18px}
   .hero h1{font-size:clamp(28px,8.8vw,38px);word-break:keep-all}
   .hero h1 span{white-space:nowrap}
