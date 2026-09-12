@@ -553,7 +553,7 @@ h1,h2,h3{margin:0}
 
 /* ---------- 진입 팝업 ---------- */
 .popup{position:fixed;z-index:300;inset:0;background:rgba(24,18,16,.72);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
-.popup-stack{display:flex;gap:24px;align-items:flex-start;max-width:100%;margin:auto}
+.popup-stack{display:flex;gap:24px;align-items:stretch;max-width:100%;margin:auto}
 .popup[hidden],.popup-box[hidden]{display:none}
 .popup-box{position:relative;display:flex;flex-direction:column;width:430px;max-width:100%;min-height:608px;background:#fff url('assets/brand/popup-template-a3.jpg') center/100% 100% no-repeat;border:0;box-shadow:0 24px 70px rgba(0,0,0,.35),10px 10px 0 var(--red);padding:58px 50px 132px;text-align:center}
 .popup-x{position:absolute;right:32px;top:27px;width:34px;height:34px;border:1px solid rgba(60,55,54,.25);border-radius:50%;background:rgba(255,255,255,.9);color:var(--ink);font-size:25px;cursor:pointer;line-height:28px}
@@ -574,9 +574,9 @@ h1,h2,h3{margin:0}
 /* 100% 국산김치 카드 — 포스터의 사진만 쓰고 글씨는 웹으로 다시 짭니다
    (인쇄용 원본을 그대로 줄이면 작은 글씨를 읽을 수 없습니다) */
 .popup-kimchi h2{margin-bottom:12px;font-size:26px}
-/* 포스터 안쪽 테두리를 넘지 않도록 사진 영역 안에서만 크롭합니다. */
-.kw-photo{display:block;width:100%;max-width:100%;margin:0;aspect-ratio:2.35/1;
-  object-fit:cover;object-position:center;overflow:hidden}
+/* 원본 사진의 좌우 끝을 덜어낸 뒤 포스터 안쪽에 작게 배치합니다. */
+.kw-photo{display:block;width:84%;max-width:280px;height:370px;margin:0 auto;
+  object-fit:cover;object-position:center}
 .kw-claim{margin:13px 0 0;padding:9px 10px;border:2px solid var(--ink);
   font:400 13.5px/1.4 var(--serif);letter-spacing:-.02em}
 .kw-claim b{font:700 18px var(--latin);color:var(--red);margin-right:3px}
@@ -593,7 +593,7 @@ h1,h2,h3{margin:0}
 @media(max-width:960px){
   .popup{padding:20px 0}
   .popup-stack{
-    display:flex;align-items:flex-start;gap:12px;width:100%;max-width:100%;padding:0 24px;
+    display:flex;align-items:stretch;gap:12px;width:100%;max-width:100%;padding:0 24px;
     overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;
   }
   .popup-stack::-webkit-scrollbar{display:none}
@@ -605,7 +605,7 @@ h1,h2,h3{margin:0}
   .popup-foot{left:36px;right:36px;bottom:46px}
   .op-grid div{padding:10px 6px}
   .op-grid b{font-size:13.5px;letter-spacing:-.06em}
-  .kw-photo{width:100%;max-width:100%;margin:0}
+  .kw-photo{width:84%;max-width:280px;margin:0 auto}
 }
 
 /* ---------- 스크롤 등장 ---------- */
@@ -787,7 +787,7 @@ h1,h2,h3{margin:0}
   .popup-box{min-height:560px;padding:44px 38px 116px}
   .popup-x{right:25px;top:22px}
   .popup-foot{left:36px;right:36px;bottom:50px}
-  .kw-photo{width:100%;max-width:100%;margin:0}
+  .kw-photo{width:84%;max-width:280px;margin:0 auto}
   .popup-box h2{font-size:25px}
 }
 
