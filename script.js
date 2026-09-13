@@ -142,6 +142,42 @@
   bindForm(document.getElementById('applyForm'), document.getElementById('formMsg'));
   bindForm(document.getElementById('quickBar'), document.getElementById('quickMsg'));
 
+  const popup = document.getElementById('entryNotice');
+  if (popup) {
+    const popupKey = 'nabeya-popup-hidden-until-4';
+    const hiddenUntil = Number(localStorage.getItem(popupKey) || 0);
+    const forcePreview = new URLSearchParams(location.search).has('previewPopup');
+    const closePopup = () => {
+      popup.hidden = true;
+    };
+    const popupBoxes = [...popup.querySelectorAll('.popup-box')];
+
+    if (forcePreview) popup.hidden = false;
+    else if (Date.now() > hiddenUntil) setTimeout(() => { popup.hidden = false; }, 900);
+
+    popupBoxes.forEach(box => {
+      box.querySelectorAll('.popup-x,[data-close]').forEach(button => {
+        button.addEventListener('click', () => {
+          box.hidden = true;
+          if (!popupBoxes.some(item => !item.hidden && item.offsetParent)) closePopup();
+        });
+      });
+    });
+    popup.querySelectorAll('.popup-cta').forEach(link => link.addEventListener('click', closePopup));
+    popup.querySelectorAll('[data-today]').forEach(button => {
+      button.addEventListener('click', () => {
+        localStorage.setItem(popupKey, String(Date.now() + 86400000));
+        closePopup();
+      });
+    });
+    popup.addEventListener('click', event => {
+      if (event.target === popup) closePopup();
+    });
+    addEventListener('keydown', event => {
+      if (event.key === 'Escape' && !popup.hidden) closePopup();
+    });
+  }
+
   const standardSlider = document.querySelector('.standard-grid');
   if (standardSlider && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
     const standardSlides = [...standardSlider.children];
