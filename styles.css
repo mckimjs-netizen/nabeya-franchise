@@ -407,6 +407,7 @@ b,strong{font-weight:700}
 .credentials-head,.cost-head{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:end}
 .credentials-head h2,.cost-head h2{margin:0;font:700 clamp(39px,4.8vw,66px)/1.2 var(--serif);letter-spacing:-.055em}
 .credentials-head h2 span{display:block;white-space:nowrap}
+.credentials-head h2 strong{color:var(--red);font-weight:inherit}
 .credentials-title-mobile{display:none!important}
 .credentials-head>p,.cost-head>p{margin:0;color:var(--muted);font:400 17px/1.8 var(--serif)}
 .credential-viewport{margin-top:58px;overflow:hidden}
