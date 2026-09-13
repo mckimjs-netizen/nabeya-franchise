@@ -316,51 +316,59 @@
 
   const mobileSliderMedia = matchMedia('(max-width: 560px)');
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  const setupMobileSnapSlider = (selector, label, delay = 3400) => {
+  const setupMobileContinuousSlider = (selector, label, speed = 46) => {
     const slider = document.querySelector(selector);
     if (!slider || !mobileSliderMedia.matches || reduceMotion.matches || slider.children.length < 2) return;
 
     const slides = [...slider.children];
-    const clone = slides[0].cloneNode(true);
-    clone.classList.add('mobile-slider-clone');
-    clone.setAttribute('aria-hidden', 'true');
-    slider.append(clone);
+    slides.forEach(slide => {
+      const clone = slide.cloneNode(true);
+      clone.classList.add('mobile-slider-clone');
+      clone.setAttribute('aria-hidden', 'true');
+      slider.append(clone);
+    });
+    slider.classList.add('is-continuous-mobile');
 
-    let current = 0;
-    let timer = 0;
-    let resetTimer = 0;
+    let frame = 0;
+    let resumeTimer = 0;
+    let lastTime = 0;
+    let sequenceWidth = 0;
     let userPaused = false;
     let visible = false;
 
-    const slideLeft = slide => slide.offsetLeft - slides[0].offsetLeft;
+    const measure = () => {
+      const firstClone = slider.children[slides.length];
+      sequenceWidth = firstClone ? firstClone.offsetLeft - slider.children[0].offsetLeft : 0;
+    };
+    const normalizePosition = () => {
+      if (!sequenceWidth) return;
+      while (slider.scrollLeft >= sequenceWidth) slider.scrollLeft -= sequenceWidth;
+    };
     const stop = () => {
-      clearInterval(timer);
-      timer = 0;
+      cancelAnimationFrame(frame);
+      frame = 0;
+      lastTime = 0;
+    };
+    const tick = time => {
+      if (!visible || userPaused || document.hidden) return stop();
+      if (!lastTime) lastTime = time;
+      const elapsed = Math.min(time - lastTime, 40);
+      lastTime = time;
+      slider.scrollLeft += speed * elapsed / 1000;
+      normalizePosition();
+      frame = requestAnimationFrame(tick);
     };
     const start = () => {
       stop();
       if (!visible || userPaused || document.hidden) return;
-      timer = setInterval(() => {
-        current += 1;
-        const target = slider.children[current];
-        if (!target) return;
-        slider.scrollTo({ left: slideLeft(target), behavior: 'smooth' });
-        if (current === slides.length) {
-          clearTimeout(resetTimer);
-          resetTimer = setTimeout(() => {
-            slider.style.scrollBehavior = 'auto';
-            slider.scrollLeft = 0;
-            slider.offsetWidth;
-            slider.style.scrollBehavior = '';
-            current = 0;
-          }, 650);
-        }
-      }, delay);
+      measure();
+      normalizePosition();
+      frame = requestAnimationFrame(tick);
     };
-    const syncCurrent = () => {
-      current = slides.reduce((closest, slide, index) => (
-        Math.abs(slideLeft(slide) - slider.scrollLeft) < Math.abs(slideLeft(slides[closest]) - slider.scrollLeft) ? index : closest
-      ), 0);
+    const resumeAfterInteraction = () => {
+      clearTimeout(resumeTimer);
+      normalizePosition();
+      if (!userPaused) resumeTimer = setTimeout(start, 700);
     };
     const setPaused = paused => {
       userPaused = paused;
@@ -382,13 +390,20 @@
       setPaused(!userPaused);
     });
     slider.addEventListener('pointerdown', stop, { passive: true });
-    slider.addEventListener('pointerup', () => {
-      syncCurrent();
-      if (!userPaused) start();
+    slider.addEventListener('pointerup', resumeAfterInteraction, { passive: true });
+    slider.addEventListener('pointercancel', resumeAfterInteraction, { passive: true });
+    slider.addEventListener('wheel', () => {
+      stop();
+      resumeAfterInteraction();
     }, { passive: true });
     slider.addEventListener('mouseenter', stop);
     slider.addEventListener('mouseleave', start);
     document.addEventListener('visibilitychange', start);
+    addEventListener('resize', () => {
+      measure();
+      normalizePosition();
+      start();
+    }, { passive: true });
 
     const observer = new IntersectionObserver(entries => {
       visible = entries[0].isIntersecting;
@@ -397,10 +412,10 @@
     observer.observe(slider);
   };
 
-  setupMobileSnapSlider('.economics-grid', '나베야 사업 수익 구조');
-  setupMobileSnapSlider('.support-cards', '나베야 운영 지원');
-  setupMobileSnapSlider('.marketing-grid', '나베야 마케팅 지원');
-  setupMobileSnapSlider('.poster-row', '나베야 브랜드 포스터', 3800);
+  setupMobileContinuousSlider('.economics-grid', '나베야 사업 수익 구조');
+  setupMobileContinuousSlider('.support-cards', '나베야 운영 지원');
+  setupMobileContinuousSlider('.marketing-grid', '나베야 마케팅 지원');
+  setupMobileContinuousSlider('.poster-row', '나베야 브랜드 포스터', 34);
 
   const revealTargets = document.querySelectorAll('.origin-card,.review-close,.reorder-grid,.reorder-closing,.daily-grid,.standard-head,.standard-grid,.standard-sauce,.proof-numbers,.proof-statement,.economics-grid,.delivery-grid,.category-row,.conversion-copy,.support-grid,.site-analysis,.marketing-grid,.brand-kit,.credential-viewport,.cost-summary,.process,.faq-grid,.apply-grid');
   if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
