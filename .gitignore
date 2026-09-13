@@ -8,6 +8,7 @@ assets/*
 assets/brand/*
 !assets/brand/*.webp
 !assets/brand/*.mp4
+!assets/brand/*.gif
 !assets/brand/mobile-menu-template.jpg
 !assets/brand/story-*.jpg
 !assets/brand/favicon-*.png
@@ -21,3 +22,4 @@ assets/brand/*
 # Local/editor artifacts
 .DS_Store
 Thumbs.db
+preview-server.cjs
