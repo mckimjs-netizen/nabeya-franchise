@@ -314,7 +314,95 @@
     addEventListener('resize', setMenuFlow, { passive: true });
   }
 
-  const revealTargets = document.querySelectorAll('.origin-card,.review-close,.reorder-grid,.reorder-closing,.daily-grid,.standard-head,.standard-grid,.standard-sauce,.proof-numbers,.proof-statement,.economics-grid,.delivery-grid,.category-row,.conversion-copy,.opening-row,.support-grid,.site-analysis,.marketing-grid,.brand-kit,.credential-viewport,.cost-summary,.process,.faq-grid,.apply-grid');
+  const mobileSliderMedia = matchMedia('(max-width: 560px)');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const setupMobileSnapSlider = (selector, label, delay = 3400) => {
+    const slider = document.querySelector(selector);
+    if (!slider || !mobileSliderMedia.matches || reduceMotion.matches || slider.children.length < 2) return;
+
+    const slides = [...slider.children];
+    const clone = slides[0].cloneNode(true);
+    clone.classList.add('mobile-slider-clone');
+    clone.setAttribute('aria-hidden', 'true');
+    slider.append(clone);
+
+    let current = 0;
+    let timer = 0;
+    let resetTimer = 0;
+    let userPaused = false;
+    let visible = false;
+
+    const slideLeft = slide => slide.offsetLeft - slides[0].offsetLeft;
+    const stop = () => {
+      clearInterval(timer);
+      timer = 0;
+    };
+    const start = () => {
+      stop();
+      if (!visible || userPaused || document.hidden) return;
+      timer = setInterval(() => {
+        current += 1;
+        const target = slider.children[current];
+        if (!target) return;
+        slider.scrollTo({ left: slideLeft(target), behavior: 'smooth' });
+        if (current === slides.length) {
+          clearTimeout(resetTimer);
+          resetTimer = setTimeout(() => {
+            slider.style.scrollBehavior = 'auto';
+            slider.scrollLeft = 0;
+            slider.offsetWidth;
+            slider.style.scrollBehavior = '';
+            current = 0;
+          }, 650);
+        }
+      }, delay);
+    };
+    const syncCurrent = () => {
+      current = slides.reduce((closest, slide, index) => (
+        Math.abs(slideLeft(slide) - slider.scrollLeft) < Math.abs(slideLeft(slides[closest]) - slider.scrollLeft) ? index : closest
+      ), 0);
+    };
+    const setPaused = paused => {
+      userPaused = paused;
+      slider.setAttribute('aria-pressed', String(paused));
+      slider.setAttribute('aria-label', paused ? `${label}. 눌러서 슬라이드 재생` : `${label}. 눌러서 슬라이드 정지`);
+      paused ? stop() : start();
+    };
+
+    slider.setAttribute('role', 'button');
+    slider.setAttribute('tabindex', '0');
+    setPaused(false);
+    slider.addEventListener('click', event => {
+      if (event.target.closest('a,button,input,select,textarea,video')) return;
+      setPaused(!userPaused);
+    });
+    slider.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      setPaused(!userPaused);
+    });
+    slider.addEventListener('pointerdown', stop, { passive: true });
+    slider.addEventListener('pointerup', () => {
+      syncCurrent();
+      if (!userPaused) start();
+    }, { passive: true });
+    slider.addEventListener('mouseenter', stop);
+    slider.addEventListener('mouseleave', start);
+    document.addEventListener('visibilitychange', start);
+
+    const observer = new IntersectionObserver(entries => {
+      visible = entries[0].isIntersecting;
+      visible ? start() : stop();
+    }, { threshold: .25 });
+    observer.observe(slider);
+  };
+
+  setupMobileSnapSlider('.economics-grid', '나베야 사업 수익 구조');
+  setupMobileSnapSlider('.support-cards', '나베야 운영 지원');
+  setupMobileSnapSlider('.marketing-grid', '나베야 마케팅 지원');
+  setupMobileSnapSlider('.poster-row', '나베야 브랜드 포스터', 3800);
+
+  const revealTargets = document.querySelectorAll('.origin-card,.review-close,.reorder-grid,.reorder-closing,.daily-grid,.standard-head,.standard-grid,.standard-sauce,.proof-numbers,.proof-statement,.economics-grid,.delivery-grid,.category-row,.conversion-copy,.support-grid,.site-analysis,.marketing-grid,.brand-kit,.credential-viewport,.cost-summary,.process,.faq-grid,.apply-grid');
   if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
     revealTargets.forEach(target => target.classList.add('reveal'));
     const observer = new IntersectionObserver(entries => {
