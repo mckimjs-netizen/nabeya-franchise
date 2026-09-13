@@ -553,47 +553,50 @@ h1,h2,h3{margin:0}
 
 /* ---------- 진입 팝업 ---------- */
 .popup{position:fixed;z-index:300;inset:0;background:rgba(24,18,16,.72);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
-.popup-stack{display:flex;gap:24px;align-items:stretch;max-width:100%;margin:auto}
+.popup-stack{display:flex;gap:24px;align-items:flex-start;max-width:100%;margin:auto}
 .popup[hidden],.popup-box[hidden]{display:none}
-.popup-box{position:relative;display:flex;flex-direction:column;width:430px;max-width:100%;min-height:608px;background:#fff url('assets/brand/popup-template-a3.jpg') center/100% 100% no-repeat;border:0;box-shadow:0 24px 70px rgba(0,0,0,.35),10px 10px 0 var(--red);padding:58px 50px 132px;text-align:center}
+.popup-box{position:relative;display:flex;flex-direction:column;width:430px;max-width:100%;height:608px;min-height:608px;background:#fff url('assets/brand/popup-template-a3.jpg') center/100% 100% no-repeat;border:0;box-shadow:0 24px 70px rgba(0,0,0,.35),10px 10px 0 var(--red);padding:58px 50px 132px;text-align:center}
 .popup-x{position:absolute;right:32px;top:27px;width:34px;height:34px;border:1px solid rgba(60,55,54,.25);border-radius:50%;background:rgba(255,255,255,.9);color:var(--ink);font-size:25px;cursor:pointer;line-height:28px}
 .popup-kicker{margin:0;font:700 11px var(--latin);letter-spacing:.14em;color:#8a7563}
 .popup-box h2{margin:10px 0 18px;font:700 30px/1.3 var(--serif);letter-spacing:-.04em;color:var(--ink)}
 .popup-box h2 span{color:var(--red)}
 .popup-cta{display:block;margin:0 0 18px;padding:15px;background:var(--red);color:#fff;border:2px solid var(--ink);font-weight:900;box-shadow:5px 5px 0 var(--yellow)}
+.popup-box>.popup-cta{position:absolute;left:50px;right:50px;bottom:96px;margin:0}
 .popup-foot{position:absolute;left:48px;right:48px;bottom:58px;display:flex;margin:0;border:1px solid rgba(60,55,54,.35);background:rgba(255,255,255,.94)}
 .popup-foot button{flex:1;padding:12px 6px;border:0;border-right:1px solid rgba(60,55,54,.35);background:transparent;font-size:12px;cursor:pointer}
 .popup-foot button:last-child{border-right:0}
 /* 오픈 예정 매장 — 카드형 */
 .op-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:16px 0 4px;
   border-top:2px dashed rgba(60,55,54,.35);border-bottom:2px dashed rgba(60,55,54,.35)}
-.op-grid div{padding:11px 8px;background:#fff;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--yellow)}
+.op-grid div{padding:8px;background:#fff;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--yellow)}
 .op-grid i{display:block;font:700 11px 'Noto Sans KR',sans-serif;font-style:normal;color:var(--red);letter-spacing:-.02em}
 .op-grid b{display:block;margin-top:3px;font:700 16px var(--serif);letter-spacing:-.045em}
 .op-note{margin:14px 0 20px;font-size:11.5px;line-height:1.7;color:#8b8079}
 /* 100% 국산김치 카드 — 포스터의 사진만 쓰고 글씨는 웹으로 다시 짭니다
    (인쇄용 원본을 그대로 줄이면 작은 글씨를 읽을 수 없습니다) */
-.popup-kimchi h2{margin-bottom:12px;font-size:26px}
+.popup-kimchi{padding-top:46px;padding-bottom:96px}
+.popup-kimchi h2{margin:6px 0 9px;font-size:24px;line-height:1.22}
 /* 원본 사진의 좌우 끝을 덜어낸 뒤 포스터 안쪽에 작게 배치합니다. */
-.kw-photo{display:block;width:84%;max-width:280px;height:370px;margin:0 auto;
+.kw-photo{display:block;width:84%;max-width:280px;height:100px;margin:0 auto;
   object-fit:cover;object-position:center}
-.kw-claim{margin:13px 0 0;padding:9px 10px;border:2px solid var(--ink);
+.kw-claim{margin:8px 0 0;padding:7px 10px;border:2px solid var(--ink);
   font:400 13.5px/1.4 var(--serif);letter-spacing:-.02em}
 .kw-claim b{font:700 18px var(--latin);color:var(--red);margin-right:3px}
-.kw-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:11px;text-align:left}
-.kw-grid div{padding:7px 9px;background:#fff;border:1px solid rgba(60,55,54,.28)}
+.kw-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:7px;text-align:left}
+.kw-grid div{padding:5px 8px;background:#fff;border:1px solid rgba(60,55,54,.28)}
 .kw-grid i{display:block;font:700 11.5px 'Noto Sans KR',sans-serif;font-style:normal;
   color:var(--ink);letter-spacing:-.03em}
 .kw-grid b{display:block;margin-top:1px;font:400 10.5px 'Noto Sans KR',sans-serif;color:#7a6f6a}
-.kw-cert{margin:11px 0 0;padding-top:10px;border-top:1px dashed rgba(60,55,54,.35);
-  font:400 11px/1.6 'Noto Sans KR',sans-serif;color:#7a6f6a}
-.kw-quote{margin:9px 0 15px;font:700 14.5px var(--serif);letter-spacing:-.03em;color:var(--red)}
+.kw-cert{margin:6px 0 0;padding-top:6px;border-top:1px dashed rgba(60,55,54,.35);
+  font:400 11px/1.4 'Noto Sans KR',sans-serif;color:#7a6f6a}
+.kw-quote{margin:5px 0 7px;font:700 14.5px var(--serif);letter-spacing:-.03em;color:var(--red)}
+.popup-kimchi .popup-cta{padding:11px}
 /* 두 장을 나란히 놓을 수 없는 폭에서는 옆으로 밀어 보게 합니다.
    다음 카드가 살짝 걸쳐 보이도록 폭을 잡아, 넘길 수 있다는 걸 알 수 있게 했습니다. */
 @media(max-width:960px){
   .popup{padding:20px 0}
   .popup-stack{
-    display:flex;align-items:stretch;gap:12px;width:100%;max-width:100%;padding:0 24px;
+    display:flex;align-items:flex-start;gap:12px;width:100%;max-width:100%;padding:0 24px;
     overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;
   }
   .popup-stack::-webkit-scrollbar{display:none}
@@ -784,11 +787,14 @@ h1,h2,h3{margin:0}
   .quickbar-tel{background:#fff;color:var(--ink)}
   .quickbar-tel b{font:800 19px var(--latin);letter-spacing:-.02em}
   .quickbar-apply{flex:1.15;background:var(--red);color:#fff;font-size:15px}
-  .popup-box{min-height:560px;padding:44px 38px 116px}
+  .popup-box{height:560px;min-height:560px;padding:44px 38px 116px}
+  .popup-kimchi{padding-top:38px;padding-bottom:88px}
   .popup-x{right:25px;top:22px}
   .popup-foot{left:36px;right:36px;bottom:50px}
+  .popup-box>.popup-cta{left:38px;right:38px;bottom:94px}
   .kw-photo{width:84%;max-width:280px;margin:0 auto}
   .popup-box h2{font-size:25px}
+  .popup-kimchi h2{font-size:22px}
 }
 
 /* 작은 모바일 화면: 핵심 문구가 화면 밖으로 밀리거나 어색하게 한 글자씩 꺾이지 않도록 */
