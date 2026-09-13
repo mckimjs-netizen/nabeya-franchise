@@ -503,6 +503,11 @@ b,strong{font-weight:700}
 .footer{display:grid;grid-template-columns:.7fr 1.3fr;gap:60px;padding:65px 6vw;background:#100d0b;color:#a99c93}
 .footer>div:first-child{display:flex;flex-direction:column}.footer>div:first-child b{color:#fff;font:700 38px var(--serif)}.footer>div:first-child span{font:700 11px var(--latin);letter-spacing:.1em}
 .footer p{margin:0 0 8px;font-size:12px}.footer a{color:#fff}.footer .privacy-text{margin:20px 0;max-width:760px;line-height:1.8}
+.top-button{position:fixed;z-index:1150;right:clamp(16px,2.2vw,36px);bottom:calc(var(--bar-height) + 24px);display:flex;width:66px;aspect-ratio:1;flex-direction:column;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.16);border-radius:50%;background:rgba(35,29,26,.92);color:#fff;box-shadow:0 10px 28px rgba(0,0,0,.28);opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .22s,visibility .22s,transform .22s,background .22s,color .22s;backdrop-filter:blur(8px)}
+.top-button.show{opacity:1;visibility:visible;transform:none}
+.top-button>span{width:0;height:0;border-right:7px solid transparent;border-bottom:9px solid currentColor;border-left:7px solid transparent}
+.top-button small{margin-top:6px;font:700 9px/1 var(--latin);letter-spacing:.08em}
+.top-button:hover,.top-button:focus-visible{background:var(--yellow);color:var(--ink);transform:translateY(-3px)}
 .quickbar{position:fixed;z-index:1200;left:0;right:0;bottom:0;height:var(--bar-height);display:grid;grid-template-columns:1.1fr .7fr .9fr 1fr 1.1fr .85fr;gap:8px;align-items:center;padding:10px 4vw;background:rgba(24,19,16,.98);color:#fff;border-top:2px solid var(--yellow)}
 .quickbar>div{display:flex;flex-direction:column}.quickbar>div small{color:var(--yellow);font-size:10px}.quickbar>div a{font:700 22px var(--latin)}
 .quickbar>input{height:44px;padding:0 11px;border:1px solid #66564d;background:#fff;color:var(--ink);font-size:13px}
@@ -587,6 +592,8 @@ b,strong{font-weight:700}
   .quickbar>div,.quickbar>input,.quickbar>label,.quickbar>button{display:none}
   .quickbar .mobile-call,.quickbar .mobile-apply{display:flex;align-items:center;justify-content:center;height:52px;font-weight:700}
   .quickbar .mobile-call{border:1px solid var(--yellow);color:var(--yellow)}.quickbar .mobile-apply{background:var(--red);color:#fff}
+  .top-button{right:14px;bottom:calc(var(--bar-height) + 14px);width:52px}
+  .top-button>span{border-right-width:6px;border-bottom-width:8px;border-left-width:6px}.top-button small{margin-top:5px;font-size:8px}
 }
 
 @media(max-width:560px){

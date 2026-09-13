@@ -1,6 +1,12 @@
 (() => {
   const header = document.getElementById('siteHeader');
-  const syncHeader = () => header?.classList.toggle('scrolled', window.scrollY > 24);
+  const topButton = document.querySelector('.top-button');
+  const syncHeader = () => {
+    header?.classList.toggle('scrolled', window.scrollY > 24);
+    const showTopButton = window.scrollY > 480;
+    topButton?.classList.toggle('show', showTopButton);
+    topButton?.setAttribute('aria-hidden', String(!showTopButton));
+  };
   syncHeader();
   addEventListener('scroll', syncHeader, { passive: true });
 
