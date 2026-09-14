@@ -168,7 +168,7 @@ b,strong{font-weight:700}
 .reviews{overflow:hidden;padding:0 0 105px;background:#251d19;color:#fff}
 .reviews .section-shell{padding-bottom:52px}
 .review-head{margin-bottom:0}
-.review-marquee{display:grid;gap:9px;margin:0;padding:15px 0;background:#0d0b0a;border-top:2px solid #000;border-bottom:2px solid #000}
+.review-marquee{display:grid;gap:9px;margin:0;padding:15px 0;background:#0d0b0a;border-top:2px solid #000;border-bottom:2px solid #000;transform:none}
 .review-track{position:relative;display:flex;width:max-content;gap:14px;padding:23px 0;will-change:transform;background:#171311;border-top:1px solid #332923;border-bottom:1px solid #332923}
 .review-track::before,.review-track::after{content:"";position:absolute;z-index:2;left:0;width:100%;height:9px;background:repeating-linear-gradient(90deg,transparent 0 10px,#e6dece 10px 22px,transparent 22px 32px);opacity:.78;pointer-events:none}
 .review-track::before{top:6px}.review-track::after{bottom:6px}
@@ -577,7 +577,7 @@ b,strong{font-weight:700}
   .origin-card,.origin-card:nth-of-type(even){grid-template-columns:1fr;gap:32px;margin-top:64px}
   .origin-card:nth-of-type(even)>:first-child{order:0}
   .origin-card figure img{height:410px}.origin-double img{height:430px}.origin-card p{font-size:16px}
-  .review-marquee{gap:14px;margin:0 -10px;transform:rotate(-.6deg)}
+  .review-marquee{gap:14px;margin:0 -10px;transform:none}
   .review-track,.review-set{gap:12px}.review-set{padding-right:12px}
   .review-set figure,.review-set figure:nth-child(3n+2){width:270px;height:235px;box-shadow:0 0 0 3px #090807}
   .review-set figcaption{left:8px;right:8px;bottom:8px;padding:8px 10px;font-size:12.5px}
