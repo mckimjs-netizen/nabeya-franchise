@@ -58,6 +58,9 @@ b,strong{font-weight:700}
 .header-call small{font:700 11px var(--sans)}
 .header-store{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:40px;padding:8px 12px;border:1px solid var(--yellow);border-radius:5px;color:var(--yellow);font:700 14px/1.2 var(--sans);white-space:nowrap;transition:background .2s,color .2s}
 .header-store:hover{background:var(--yellow);color:var(--ink)}
+@media(min-width:901px){
+  .header-store{border-width:2px;background:#211a17;box-shadow:0 4px 12px rgba(0,0,0,.45)}
+}
 .nav-toggle{display:none;border:0;background:none;color:inherit;padding:8px}
 .nav-toggle i{display:block;width:26px;height:2px;margin:5px 0;background:currentColor}
 
