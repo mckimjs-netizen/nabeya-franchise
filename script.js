@@ -437,47 +437,63 @@
   }
 })();
 
-/* 01 · ACTUAL POS DATA 숫자 카운트업 (265개 · 116개 · 48.3%) */
+/* 숫자 카운트업: 01 POS 데이터(265·116·48.3), 06 마케팅(800만원), 11 재료 기준(168·0.1·100) */
 (() => {
-  const numbers = [...document.querySelectorAll('.proof-numbers b')];
-  if (!numbers.length || !('IntersectionObserver' in window)) return;
+  if (!('IntersectionObserver' in window)) return;
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  const items = numbers.map(b => {
-    const node = [...b.childNodes].find(n => n.nodeType === Node.TEXT_NODE && n.textContent.trim());
-    if (!node) return null;
-    const text = node.textContent.trim();
-    const target = parseFloat(text.replace(/,/g, ''));
-    if (!Number.isFinite(target)) return null;
-    const decimals = (text.split('.')[1] || '').length;
-    b.style.fontVariantNumeric = 'tabular-nums';
-    return { node, text, target, decimals };
-  }).filter(Boolean);
-  if (!items.length) return;
-
   const format = (value, decimals) => value.toLocaleString('ko-KR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-  items.forEach(item => { item.node.textContent = format(0, item.decimals); });
 
-  const run = () => {
+  // 요소 안 첫 글자 숫자만 분리해 애니메이션 대상으로 만든다 (뒤 글자 '만원 상당' 등은 그대로 둠)
+  const prepare = el => {
+    const node = [...el.childNodes].find(n => n.nodeType === Node.TEXT_NODE && n.textContent.trim());
+    if (!node) return null;
+    const match = node.textContent.match(/^(\s*)([\d,]+(?:\.\d+)?)(.*)$/s);
+    if (!match) return null;
+    const [, lead, numText, rest] = match;
+    const target = parseFloat(numText.replace(/,/g, ''));
+    if (!Number.isFinite(target)) return null;
+    let numNode = node;
+    if (lead || rest) {
+      numNode = document.createTextNode(numText);
+      const frag = document.createDocumentFragment();
+      if (lead) frag.append(lead);
+      frag.append(numNode);
+      if (rest) frag.append(rest);
+      node.replaceWith(frag);
+    }
+    el.style.fontVariantNumeric = 'tabular-nums';
+    const decimals = (numText.split('.')[1] || '').length;
+    numNode.textContent = format(0, decimals);
+    return { node: numNode, text: numText, target, decimals };
+  };
+
+  const animate = items => {
     const start = performance.now();
     const duration = 1600;
     const tick = now => {
       const p = Math.min(1, (now - start) / duration);
       const eased = 1 - Math.pow(1 - p, 3);
-      items.forEach(item => {
-        item.node.textContent = p < 1 ? format(item.target * eased, item.decimals) : item.text;
-      });
+      items.forEach(item => { item.node.textContent = p < 1 ? format(item.target * eased, item.decimals) : item.text; });
       if (p < 1) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
   };
 
-  const box = document.querySelector('.proof-numbers');
-  const io = new IntersectionObserver(entries => {
-    if (!entries.some(e => e.isIntersecting)) return;
-    io.disconnect();
-    run();
-  }, { threshold: 0.35 });
-  io.observe(box);
-  setTimeout(() => { if (items.some(i => i.node.textContent !== i.text) && box.getBoundingClientRect().top < innerHeight) { io.disconnect(); run(); } }, 8000);
+  const groups = [
+    { box: '.proof-numbers', nums: '.proof-numbers b' },
+    { box: '.marketing-head', nums: '.marketing-head h2 strong' },
+    { box: '.standard-grid', nums: '.standard-grid .standard-metric strong' }
+  ];
+
+  groups.forEach(group => {
+    const box = document.querySelector(group.box);
+    if (!box) return;
+    const items = [...document.querySelectorAll(group.nums)].map(prepare).filter(Boolean);
+    if (!items.length) return;
+    let done = false;
+    const run = () => { if (done) return; done = true; io.disconnect(); animate(items); };
+    const io = new IntersectionObserver(entries => { if (entries.some(e => e.isIntersecting)) run(); }, { threshold: 0.3 });
+    io.observe(box);
+  });
 })();
