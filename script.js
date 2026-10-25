@@ -90,11 +90,66 @@
     reveals.forEach(el => el.classList.add('in'));
   }
 
-  /* menu rail arrows */
+  /* auto-sliding rails: flow slowly, stop while touched/hovered, resume after a moment, swipe still works */
+  function autoRail(el, { speed = 0.5, mobileOnly = false } = {}) {
+    if (!el || el.children.length < 2) return null;
+    const originals = [...el.children];
+    originals.forEach(node => {
+      const copy = node.cloneNode(true);
+      copy.classList.add('is-clone');
+      copy.setAttribute('aria-hidden', 'true');
+      copy.querySelectorAll('img').forEach(img => img.setAttribute('alt', ''));
+      copy.querySelectorAll('[data-count]').forEach(n => n.removeAttribute('data-count'));
+      el.append(copy);
+    });
+    let paused = false;
+    let visible = !('IntersectionObserver' in window);
+    let resumeTimer = 0;
+    let last = performance.now();
+    let carry = 0;
+    const active = () => !reduceMotion && (!mobileOnly || mobileQuery.matches);
+    const pause = () => { paused = true; clearTimeout(resumeTimer); };
+    const resume = (delay = 2500) => { clearTimeout(resumeTimer); resumeTimer = setTimeout(() => { paused = false; }, delay); };
+    el.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') pause(); });
+    el.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') resume(400); });
+    el.addEventListener('touchstart', pause, { passive: true });
+    el.addEventListener('touchend', () => resume(), { passive: true });
+    el.addEventListener('wheel', () => { pause(); resume(); }, { passive: true });
+    el.addEventListener('focusin', pause);
+    el.addEventListener('focusout', () => resume(400));
+    if ('IntersectionObserver' in window) new IntersectionObserver(entries => { visible = entries[0].isIntersecting; }).observe(el);
+    const loopWidth = () => {
+      const first = el.children[0];
+      const firstClone = el.children[originals.length];
+      return first && firstClone ? firstClone.offsetLeft - first.offsetLeft : 0;
+    };
+    const tick = now => {
+      const dt = Math.min(50, now - last);
+      last = now;
+      if (active() && visible && !document.hidden) {
+        const loop = loopWidth();
+        if (!paused) {
+          carry += speed * dt / 16.67;
+          const px = Math.floor(carry);
+          if (px) { carry -= px; el.scrollLeft += px; }
+        }
+        if (loop > 0 && el.scrollLeft >= loop) el.scrollLeft -= loop;
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    return { pause, resume };
+  }
+
   const rail = document.querySelector('.menu-rail');
+  const menuSlider = autoRail(rail, { speed: 0.6 });
   const step = () => (rail?.querySelector('figure')?.offsetWidth || 300) + 18;
-  document.querySelector('.menu-prev')?.addEventListener('click', () => rail?.scrollBy({ left: -step() * 2, behavior: 'smooth' }));
-  document.querySelector('.menu-next')?.addEventListener('click', () => rail?.scrollBy({ left: step() * 2, behavior: 'smooth' }));
+  const nudge = dir => { menuSlider?.pause(); rail?.scrollBy({ left: dir * step(), behavior: 'smooth' }); menuSlider?.resume(3000); };
+  document.querySelector('.menu-prev')?.addEventListener('click', () => nudge(-1));
+  document.querySelector('.menu-next')?.addEventListener('click', () => nudge(1));
+
+  autoRail(document.querySelector('.cred-row'), { speed: 0.45 });
+  ['.std-grid', '.pillars', '.mk-grid', '.econ-grid'].forEach(sel => autoRail(document.querySelector(sel), { speed: 0.45, mobileOnly: true }));
 
   /* review marquee: duplicate for seamless loop */
   document.querySelectorAll('.review-track').forEach(track => {
