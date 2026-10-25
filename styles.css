@@ -799,14 +799,9 @@ b,strong{font-weight:700}
 /* ===== HERO DECLARATION LOOP (2026-10-25) : "경쟁" 흐려짐 + "독점" 네온·도장 반복 ===== */
 .hero-declaration span{position:relative;display:inline-block;transition:color .3s}
 .hero-declaration.decl-strike span{color:rgba(255,255,255,.58)}
-.hero-fx .hero-declaration.decl-live strong{animation:declNeon 5.6s ease-in-out infinite}
+.hero-fx .hero-declaration.decl-live strong{color:#ffd23f;animation:declNeon 3.2s ease-in-out infinite}
 @keyframes declNeon{
-  0%,100%{text-shadow:0 0 4px rgba(255,214,90,.55),0 0 10px rgba(255,190,40,.35);opacity:1}
-  40%{text-shadow:0 0 7px rgba(255,224,120,.95),0 0 18px rgba(255,196,50,.75),0 0 30px rgba(255,170,30,.45);opacity:1}
-  86%{text-shadow:0 0 5px rgba(255,214,90,.6),0 0 12px rgba(255,190,40,.4);opacity:1}
-  88%{opacity:.45;text-shadow:none}
-  89.5%{opacity:1;text-shadow:0 0 8px rgba(255,224,120,.9),0 0 20px rgba(255,196,50,.6)}
-  91%{opacity:.6;text-shadow:none}
-  92.5%{opacity:1;text-shadow:0 0 6px rgba(255,214,90,.7),0 0 14px rgba(255,190,40,.45)}
+  0%,100%{text-shadow:0 2px 0 rgba(96,14,9,.9),0 0 10px rgba(255,210,70,.28)}
+  50%{text-shadow:0 2px 0 rgba(96,14,9,.9),0 0 16px rgba(255,214,80,.55),0 0 30px rgba(255,186,40,.3)}
 }
 @media(prefers-reduced-motion:reduce){.hero-fx .hero-declaration.decl-live strong{animation:none}}
