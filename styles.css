@@ -796,11 +796,9 @@ b,strong{font-weight:700}
 @media(max-width:560px){.daily-menu-name{margin-top:7px;font-size:12px}.daily-badge{font-size:11px;padding:4px 8px 3px;bottom:-11px}.daily-week span.today::after{top:-12px;font-size:7px}.daily-steam i{width:90px;height:90px}.daily-steam i:nth-child(2){width:110px;height:110px}@keyframes dailySteam{0%{opacity:0;transform:translateY(0) scale(.6)}25%{opacity:.75}100%{opacity:0;transform:translateY(-170px) scale(1.7)}}}
 @media(prefers-reduced-motion:reduce){.daily-steam,.daily-week span.today::after{animation:none!important}}
 
-/* ===== HERO DECLARATION LOOP (2026-10-25) : "경쟁" 취소선 + "독점" 네온·도장 반복 ===== */
+/* ===== HERO DECLARATION LOOP (2026-10-25) : "경쟁" 흐려짐 + "독점" 네온·도장 반복 ===== */
 .hero-declaration span{position:relative;display:inline-block;transition:color .3s}
-.hero-declaration span::after{content:"";position:absolute;left:-3%;right:-3%;top:50%;height:.16em;margin-top:-.08em;border-radius:.1em;background:#1b1210;box-shadow:0 1px 0 rgba(255,255,255,.25);transform:rotate(-1.5deg) scaleX(0);transform-origin:left center;transition:transform .38s cubic-bezier(.6,0,.2,1)}
 .hero-declaration.decl-strike span{color:rgba(255,255,255,.58)}
-.hero-declaration.decl-strike span::after{transform:rotate(-1.5deg) scaleX(1)}
 .hero-fx .hero-declaration.decl-live strong{animation:declNeon 5.6s ease-in-out infinite}
 @keyframes declNeon{
   0%,100%{text-shadow:0 0 4px rgba(255,214,90,.55),0 0 10px rgba(255,190,40,.35);opacity:1}
@@ -811,4 +809,4 @@ b,strong{font-weight:700}
   91%{opacity:.6;text-shadow:none}
   92.5%{opacity:1;text-shadow:0 0 6px rgba(255,214,90,.7),0 0 14px rgba(255,190,40,.45)}
 }
-@media(prefers-reduced-motion:reduce){.hero-declaration span::after{transition:none}.hero-fx .hero-declaration.decl-live strong{animation:none}}
+@media(prefers-reduced-motion:reduce){.hero-fx .hero-declaration.decl-live strong{animation:none}}
