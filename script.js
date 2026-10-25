@@ -436,3 +436,48 @@
     revealTargets.forEach(target => observer.observe(target));
   }
 })();
+
+/* 01 · ACTUAL POS DATA 숫자 카운트업 (265개 · 116개 · 48.3%) */
+(() => {
+  const numbers = [...document.querySelectorAll('.proof-numbers b')];
+  if (!numbers.length || !('IntersectionObserver' in window)) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const items = numbers.map(b => {
+    const node = [...b.childNodes].find(n => n.nodeType === Node.TEXT_NODE && n.textContent.trim());
+    if (!node) return null;
+    const text = node.textContent.trim();
+    const target = parseFloat(text.replace(/,/g, ''));
+    if (!Number.isFinite(target)) return null;
+    const decimals = (text.split('.')[1] || '').length;
+    b.style.fontVariantNumeric = 'tabular-nums';
+    return { node, text, target, decimals };
+  }).filter(Boolean);
+  if (!items.length) return;
+
+  const format = (value, decimals) => value.toLocaleString('ko-KR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  items.forEach(item => { item.node.textContent = format(0, item.decimals); });
+
+  const run = () => {
+    const start = performance.now();
+    const duration = 1600;
+    const tick = now => {
+      const p = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      items.forEach(item => {
+        item.node.textContent = p < 1 ? format(item.target * eased, item.decimals) : item.text;
+      });
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+
+  const box = document.querySelector('.proof-numbers');
+  const io = new IntersectionObserver(entries => {
+    if (!entries.some(e => e.isIntersecting)) return;
+    io.disconnect();
+    run();
+  }, { threshold: 0.35 });
+  io.observe(box);
+  setTimeout(() => { if (items.some(i => i.node.textContent !== i.text) && box.getBoundingClientRect().top < innerHeight) { io.disconnect(); run(); } }, 8000);
+})();
