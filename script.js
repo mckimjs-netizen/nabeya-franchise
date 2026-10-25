@@ -857,3 +857,51 @@
     }, { threshold: 0, rootMargin: '0px 0px -15% 0px' }).observe(media);
   } else { visible = true; start(); }
 })();
+
+/* 첫 화면 "경쟁하지 않겠습니다. 독점하겠습니다." 쉼 없는 강조: 독점 네온 + 5초마다 경쟁 취소선 → 독점 도장 쿵 */
+(() => {
+  const root = document.documentElement;
+  const box = document.querySelector('.hero-declaration');
+  if (!box || !root.classList.contains('hero-fx')) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const word = box.querySelector('strong');
+  if (!word) return;
+
+  let visible = true, timer = 0, started = false;
+  const stamp = () => {
+    if (word.animate) word.animate([
+      { transform: 'scale(1.75) rotate(-4deg)', opacity: 0 },
+      { transform: 'scale(.93) rotate(1deg)', opacity: 1, offset: .6 },
+      { transform: 'scale(1.04)', offset: .8 },
+      { transform: 'none', opacity: 1 }
+    ], { duration: 520, easing: 'cubic-bezier(.2,.7,.2,1)' });
+    if (box.animate) box.animate([
+      { transform: 'translate(0,0)' }, { transform: 'translate(-3px,1px)' }, { transform: 'translate(3px,-1px)' }, { transform: 'translate(-2px,0)' }, { transform: 'translate(0,0)' }
+    ], { duration: 320, delay: 300, easing: 'ease-in-out' });
+  };
+  const cycle = () => {
+    if (!visible) { timer = 0; return; }
+    box.classList.add('decl-strike');
+    setTimeout(stamp, 420);
+    setTimeout(() => box.classList.remove('decl-strike'), 2900);
+    timer = setTimeout(cycle, 5000);
+  };
+  const begin = () => {
+    if (started) return;
+    started = true;
+    box.classList.add('decl-live');
+    timer = setTimeout(cycle, 1200);
+  };
+  // 첫 등장 도장 효과가 끝난 뒤(약 4.3초) 반복 시작
+  setTimeout(begin, 4300);
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(entries => {
+      visible = entries.some(e => e.isIntersecting);
+      if (visible && started && !timer) timer = setTimeout(cycle, 600);
+    }).observe(box);
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && visible && started && !timer) timer = setTimeout(cycle, 600);
+  });
+})();
