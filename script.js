@@ -497,7 +497,7 @@
       done = true;
       io.disconnect();
       animate(items, duration);
-    }, { threshold: 0.3 });
+    }, { threshold: 0, rootMargin: '0px 0px -15% 0px' });
     io.observe(box);
   };
 
