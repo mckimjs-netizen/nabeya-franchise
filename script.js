@@ -528,3 +528,89 @@
   // 11 재료 기준 카드
   watch('.standard-grid', all('.standard-grid .standard-metric strong').map(el => prepare(el)));
 })();
+
+/* 첫 화면 연출: SINCE 2026→2004, 첫 줄 한 글자씩, 23년·하단 지표 숫자 올라가기 */
+(() => {
+  const root = document.documentElement;
+  const hero = document.querySelector('.hero');
+  if (!hero || !root.classList.contains('hero-fx')) return;
+
+  // 첫 줄 "수많은 외식 브랜드가"를 한 글자씩 나눔
+  const line = hero.querySelector('h1 span.hero-title-line');
+  if (line && !line.children.length) {
+    const text = line.textContent;
+    line.textContent = '';
+    [...text].forEach((ch, i) => {
+      const s = document.createElement('span');
+      s.className = 'hero-char';
+      s.style.setProperty('--i', i);
+      s.textContent = ch;
+      line.append(s);
+    });
+    line.classList.add('is-split');
+  }
+
+  const tween = (duration, frame) => {
+    const start = performance.now();
+    const step = now => {
+      const p = Math.min(1, (now - start) / duration);
+      frame(1 - Math.pow(1 - p, 3), p);
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
+  // CSS 등장 애니메이션이 시작되는 시점에 맞춰 실행
+  const whenShown = (el, fallbackMs, fn) => {
+    if (!el) return;
+    const anim = el.getAnimations ? el.getAnimations()[0] : null;
+    const timing = anim && anim.effect && anim.effect.getTiming ? anim.effect.getTiming() : null;
+    const wait = timing ? Math.max(0, (Number(timing.delay) || 0) - (Number(anim.currentTime) || 0)) : fallbackMs;
+    setTimeout(fn, wait);
+  };
+
+  // 텍스트 안 숫자들을 0부터 올림 (자리 폭 고정으로 글자 밀림 방지)
+  const countText = (node, duration) => {
+    const original = node.textContent;
+    const parts = original.split(/(\d+(?:\.\d+)?)/);
+    const frag = document.createDocumentFragment();
+    const nums = [];
+    parts.forEach((s, i) => {
+      if (i % 2) {
+        const sp = document.createElement('span');
+        sp.textContent = s;
+        sp.style.cssText = 'display:inline-block;font:inherit;color:inherit;letter-spacing:inherit;text-align:right;font-variant-numeric:tabular-nums';
+        frag.append(sp);
+        nums.push({ sp, s, v: parseFloat(s), dec: (s.split('.')[1] || '').length });
+      } else if (s) frag.append(s);
+    });
+    node.replaceWith(frag);
+    nums.forEach(n => { n.sp.style.minWidth = `${n.sp.getBoundingClientRect().width}px`; n.sp.textContent = (0).toFixed(n.dec); });
+    return () => tween(duration, (e, p) => nums.forEach(n => { n.sp.textContent = p < 1 ? (n.v * e).toFixed(n.dec) : n.s; }));
+  };
+  const numberNode = el => el && [...el.childNodes].find(n => n.nodeType === Node.TEXT_NODE && /\d/.test(n.textContent));
+
+  // SINCE 2026 → 2004 (거꾸로 돌아가는 연도)
+  const since = hero.querySelector('.heritage-since');
+  const yearNode = numberNode(since);
+  if (yearNode) {
+    const original = yearNode.textContent;
+    const m = original.match(/^(.*?)(\d{4})(.*)$/s);
+    if (m) {
+      const from = 2026, to = Number(m[2]);
+      since.style.fontVariantNumeric = 'tabular-nums';
+      yearNode.textContent = m[1] + from + m[3];
+      whenShown(hero.querySelector('.heritage'), 100, () => tween(1300, (e, p) => {
+        yearNode.textContent = p < 1 ? m[1] + Math.round(from + (to - from) * e) + m[3] : original;
+      }));
+    }
+  }
+
+  // "23년 동안 살아남았을까요?"의 23
+  const n23 = numberNode(hero.querySelector('.hero-question em'));
+  if (n23) { const start = countText(n23, 1100); whenShown(hero.querySelector('.hero-question'), 2100, start); }
+
+  // 하단 지표 23년 · 100만+ · 1~3분
+  const proofStarts = [...hero.querySelectorAll('.hero-proof b')].map(numberNode).filter(Boolean).map(n => countText(n, 1300));
+  if (proofStarts.length) whenShown(hero.querySelector('.hero-proof'), 3200, () => proofStarts.forEach(f => f()));
+})();
