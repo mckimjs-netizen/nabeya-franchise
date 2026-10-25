@@ -744,3 +744,28 @@ b,strong{font-weight:700}
 @keyframes heroStamp{0%{opacity:0;transform:scale(1.9) rotate(-4deg)}60%{opacity:1;transform:scale(.92) rotate(1deg)}80%{transform:scale(1.04)}100%{opacity:1;transform:none}}
 @keyframes heroShake{0%,100%{transform:translate(0,0)}25%{transform:translate(-3px,1px)}50%{transform:translate(3px,-1px)}75%{transform:translate(-2px,0)}}
 @media(prefers-reduced-motion:reduce){.hero-fx .heritage,.hero-fx .heritage::after,.hero-fx .heritage-message strong,.hero-fx .hero h1 *,.hero-fx .hero-question,.hero-fx .hero-question em,.hero-fx .hero-declaration,.hero-fx .hero-declaration *,.hero-fx .hero-proof{animation:none!important;background-size:100% 100%}}
+
+/* ===== 04 BUSINESS ECONOMICS FX (2026-10-25) : 제목 30% + 카드별 효과(원 그래프·계기판·스톱워치) ===== */
+.economics-grid article{position:relative}
+.econ-viz{position:absolute;top:30px;right:28px;width:84px;height:84px;pointer-events:none}
+.econ-ring circle{fill:none;stroke-width:9}
+.econ-ring .track{stroke:rgba(33,26,23,.12)}
+.econ-ring .arc{stroke:var(--red);stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%}
+.econ-ring text{font:700 13px var(--sans);fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.econ-watch .face{fill:#fff;stroke:var(--ink);stroke-width:4}
+.econ-watch .knob{fill:var(--ink)}
+.econ-watch .tick{stroke:var(--ink);stroke-width:2;stroke-linecap:round}
+.econ-watch .hand{stroke:var(--red);stroke-width:4;stroke-linecap:round;transform-origin:50px 54px}
+.econ-watch .pin{fill:var(--red)}
+.econ-odo{display:inline-flex;align-items:baseline;font-size:.5em;line-height:1;letter-spacing:0}
+.econ-odo .col{display:inline-block;height:1em;overflow:hidden;width:.64em;text-align:center}
+.econ-odo .strip{display:block;transition:transform 1.5s cubic-bezier(.2,.75,.15,1)}
+.econ-odo .strip i{display:block;height:1em;font-style:normal}
+.econ-odo .sep{display:inline-block;width:.28em;text-align:center}
+.econ-odo small{margin-left:.18em}
+.econ-digital{font-size:.7em;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.econ-restore{animation:econRestore .45s ease-out both}
+.econ-stamp{display:inline-block;animation:econStamp .55s cubic-bezier(.2,.7,.2,1) both}
+@keyframes econRestore{from{opacity:0;transform:translateY(.25em)}to{opacity:1;transform:none}}
+@keyframes econStamp{0%{opacity:0;transform:scale(1.7) rotate(-4deg)}60%{opacity:1;transform:scale(.94) rotate(1deg)}80%{transform:scale(1.03)}100%{opacity:1;transform:none}}
+@media(max-width:560px){.econ-viz{top:20px;right:18px;width:60px;height:60px}}

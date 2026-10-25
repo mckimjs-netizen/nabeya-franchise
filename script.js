@@ -614,3 +614,147 @@
   const proofStarts = [...hero.querySelectorAll('.hero-proof b')].map(numberNode).filter(Boolean).map(n => countText(n, 1300));
   if (proofStarts.length) whenShown(hero.querySelector('.hero-proof'), 3200, () => proofStarts.forEach(f => f()));
 })();
+
+/* 04 수익 구조: 제목 30% 올라가기 + "아직도 속고 계십니까?" 도장, 카드별 효과(원 그래프·계기판·스톱워치) */
+(() => {
+  if (!('IntersectionObserver' in window)) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const section = document.querySelector('.economics');
+  if (!section) return;
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const ease = p => 1 - Math.pow(1 - p, 3);
+  const tween = (duration, frame) => {
+    const start = performance.now();
+    const step = now => { const p = Math.min(1, (now - start) / duration); frame(ease(p), p); if (p < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  };
+  const onVisible = (el, fn) => {
+    if (!el) return;
+    let done = false;
+    const io = new IntersectionObserver(entries => {
+      if (done || !entries.some(e => e.isIntersecting)) return;
+      done = true; io.disconnect(); fn();
+    }, { threshold: 0, rootMargin: '0px 0px -15% 0px' });
+    io.observe(el);
+  };
+  const svg = (tag, attrs) => { const n = document.createElementNS(svgNS, tag); Object.entries(attrs).forEach(([k, v]) => n.setAttribute(k, v)); return n; };
+
+  // 제목: "30%" 숫자 + "아직도 속고 계십니까?" 도장
+  const head = section.querySelector('.section-intro');
+  const headNums = [];
+  section.querySelectorAll('.section-intro h2 > span').forEach(span => {
+    const node = [...span.childNodes].find(n => n.nodeType === Node.TEXT_NODE && /\d/.test(n.textContent));
+    if (!node) return;
+    const m = node.textContent.match(/^(.*?)(\d+)(.*)$/s);
+    if (!m) return;
+    const num = document.createElement('span');
+    num.textContent = m[2];
+    num.style.cssText = 'display:inline-block;text-align:right;font-variant-numeric:tabular-nums';
+    node.replaceWith(m[1], num, m[3]);
+    num.style.minWidth = `${num.getBoundingClientRect().width}px`;
+    num.textContent = '0';
+    headNums.push({ num, target: Number(m[2]) });
+  });
+  const ems = [...section.querySelectorAll('.section-intro h2 em')];
+  ems.forEach(em => { em.style.opacity = '0'; });
+  onVisible(head, () => {
+    tween(1300, (e, p) => headNums.forEach(h => { h.num.textContent = p < 1 ? Math.round(h.target * e) : h.target; }));
+    setTimeout(() => ems.forEach(em => { em.style.opacity = ''; em.classList.add('econ-stamp'); }), 1100);
+  });
+
+  const cards = [...section.querySelectorAll('.economics-grid article')];
+  const restore = (b, html) => { b.innerHTML = html; b.removeAttribute('aria-label'); b.classList.remove('econ-restore'); void b.offsetWidth; b.classList.add('econ-restore'); };
+
+  // 카드 1: 원가 30% → 원 그래프
+  const setupCost = card => {
+    const b = card.querySelector('b'); if (!b) return null;
+    const ring = svg('svg', { class: 'econ-viz econ-ring', viewBox: '0 0 100 100', 'aria-hidden': 'true' });
+    const r = 40, len = 2 * Math.PI * r;
+    ring.append(svg('circle', { class: 'track', cx: 50, cy: 50, r }));
+    const arc = svg('circle', { class: 'arc', cx: 50, cy: 50, r, 'stroke-dasharray': len, 'stroke-dashoffset': len });
+    ring.append(arc);
+    const label = svg('text', { x: 50, y: 50 }); label.textContent = '원가'; ring.append(label);
+    card.append(ring);
+    const node = [...b.childNodes].find(n => n.nodeType === Node.TEXT_NODE && /\d/.test(n.textContent));
+    const target = node ? parseInt(node.textContent, 10) : 30;
+    if (node) node.textContent = '0';
+    return () => tween(1500, (e, p) => {
+      if (node) node.textContent = p < 1 ? Math.round(target * e) : target;
+      arc.setAttribute('stroke-dashoffset', String(len * (1 - (target / 100) * e)));
+    });
+  };
+
+  // 카드 2: 100만+ → 자동차 계기판처럼 1,000,000 굴러간 뒤 100만+
+  const setupBowls = card => {
+    const b = card.querySelector('b'); if (!b) return null;
+    const original = b.innerHTML;
+    const odo = document.createElement('span');
+    odo.className = 'econ-odo';
+    const strips = [];
+    const digits = '1,000,000'.split('');
+    let place = 0;
+    for (let i = digits.length - 1; i >= 0; i--) {
+      const ch = digits[i];
+      if (ch === ',') { const s = document.createElement('span'); s.className = 'sep'; s.textContent = ','; odo.prepend(s); continue; }
+      const col = document.createElement('span'); col.className = 'col';
+      const strip = document.createElement('span'); strip.className = 'strip';
+      const rounds = 1 + Math.min(place, 3);
+      const seq = [];
+      for (let k = 0; k < rounds; k++) for (let n = 0; n < 10; n++) seq.push(n);
+      seq.push(Number(ch));
+      seq.forEach(n => { const it = document.createElement('i'); it.textContent = n; strip.append(it); });
+      strip.style.transitionDelay = `${place * 0.06}s`;
+      col.append(strip); odo.prepend(col);
+      strips.push({ strip, last: seq.length - 1 });
+      place++;
+    }
+    const unit = document.createElement('small'); unit.textContent = '그릇'; odo.append(unit);
+    b.setAttribute('aria-label', b.textContent.trim()); odo.setAttribute('aria-hidden', 'true');
+    b.innerHTML = ''; b.append(odo);
+    return () => {
+      requestAnimationFrame(() => strips.forEach(s => { s.strip.style.transform = `translateY(-${s.last}em)`; }));
+      setTimeout(() => restore(b, original), 2600);
+    };
+  };
+
+  // 카드 3: 1–3분 → 스톱워치 초침이 돌고 00:00 → 03:00 뒤 1–3분
+  const setupSpeed = card => {
+    const b = card.querySelector('b'); if (!b) return null;
+    const original = b.innerHTML;
+    const watch = svg('svg', { class: 'econ-viz econ-watch', viewBox: '0 0 100 100', 'aria-hidden': 'true' });
+    watch.append(svg('rect', { class: 'knob', x: 44, y: 2, width: 12, height: 9, rx: 2 }));
+    watch.append(svg('circle', { class: 'face', cx: 50, cy: 54, r: 40 }));
+    for (let k = 0; k < 12; k++) {
+      const a = k * Math.PI / 6;
+      watch.append(svg('line', { class: 'tick', x1: 50 + Math.sin(a) * 33, y1: 54 - Math.cos(a) * 33, x2: 50 + Math.sin(a) * 37, y2: 54 - Math.cos(a) * 37 }));
+    }
+    const hand = svg('line', { class: 'hand', x1: 50, y1: 54, x2: 50, y2: 24 });
+    watch.append(hand);
+    watch.append(svg('circle', { class: 'pin', cx: 50, cy: 54, r: 4 }));
+    card.append(watch);
+    const digital = document.createElement('span');
+    digital.className = 'econ-digital';
+    digital.textContent = '00:00';
+    b.setAttribute('aria-label', b.textContent.trim()); digital.setAttribute('aria-hidden', 'true');
+    b.innerHTML = ''; b.append(digital);
+    return () => {
+      tween(1700, (e, p) => {
+        const secs = Math.round(180 * e);
+        digital.textContent = `${String(Math.floor(secs / 60)).padStart(2, '0')}:${String(secs % 60).padStart(2, '0')}`;
+        hand.style.transform = `rotate(${1080 * e}deg)`;
+      });
+      setTimeout(() => restore(b, original), 2500);
+    };
+  };
+
+  const setups = [setupCost, setupBowls, setupSpeed];
+  const runs = [[], [], []];
+  cards.forEach((card, i) => {
+    const kind = i % 3;
+    const run = setups[kind](card);
+    if (run) runs[kind].push(run);
+  });
+  onVisible(section.querySelector('.economics-grid'), () => {
+    runs.forEach((list, kind) => setTimeout(() => list.forEach(run => run()), kind * 300));
+  });
+})();
