@@ -758,3 +758,102 @@
     runs.forEach((list, kind) => setTimeout(() => list.forEach(run => run()), kind * 300));
   });
 })();
+
+/* 09 데일리 돈까스: 일주일 식단표 (요일이 하루씩 켜지며 그날 메뉴 사진·이름이 바뀜, 7일 배지, 오늘 표시, 김 모락모락) */
+(() => {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const media = document.querySelector('.daily-media');
+  const week = media && media.querySelector('.daily-week');
+  const wordmark = media && media.querySelector('.daily-wordmark');
+  if (!media || !week || !wordmark) return;
+  const days = [...week.children];
+  if (days.length !== 7) return;
+
+  const menus = [
+    { name: '평창김치나베', src: null },
+    { name: '통등심 돈까스', src: 'assets/brand/pork-cutlet.webp' },
+    { name: '리얼 치즈 돈까스', src: 'assets/brand/cheese-cutlet.webp' },
+    { name: '수제 경양식 왕 돈까스', src: 'assets/brand/king-cutlet.webp' },
+    { name: '안심 김치우동세트', src: 'assets/brand/kimchi-udon.webp' },
+    { name: '김치말이 냉모밀', src: 'assets/brand/kimchi-cold-soba.webp' },
+    { name: '평창 김치우동', src: 'assets/brand/kimchi-udon-hot.webp' }
+  ];
+  const dayNames = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+
+  // 김 모락모락
+  const steam = document.createElement('div');
+  steam.className = 'daily-steam';
+  steam.setAttribute('aria-hidden', 'true');
+  steam.innerHTML = '<i></i><i></i><i></i>';
+  media.insertBefore(steam, wordmark);
+
+  // 요일별 메뉴 사진 (월요일은 기존 끓는 나베 영상 그대로)
+  let loaded = false;
+  const slides = menus.map(m => {
+    if (!m.src) return null;
+    const img = document.createElement('img');
+    img.className = 'daily-slide';
+    img.alt = '';
+    img.setAttribute('aria-hidden', 'true');
+    img.decoding = 'async';
+    img.dataset.src = m.src;
+    media.insertBefore(img, steam);
+    return img;
+  });
+  const loadSlides = () => { if (loaded) return; loaded = true; slides.forEach(s => { if (s) s.src = s.dataset.src; }); };
+
+  // 메뉴 이름 줄, 7일 배지
+  const nameLine = document.createElement('p');
+  nameLine.className = 'daily-menu-name';
+  nameLine.setAttribute('aria-hidden', 'true');
+  week.after(nameLine);
+  const badge = document.createElement('div');
+  badge.className = 'daily-badge';
+  badge.setAttribute('aria-hidden', 'true');
+  badge.textContent = '7일 연속, 나베야';
+  wordmark.append(badge);
+
+  // 오늘 요일 표시
+  days[(new Date().getDay() + 6) % 7].classList.add('today');
+
+  let visible = false, running = false, timer = 0;
+  const showSlide = k => slides.forEach((s, i) => s && s.classList.toggle('show', i === k));
+  const setName = k => {
+    nameLine.innerHTML = `<b>${dayNames[k]}</b>${menus[k].name}`;
+    nameLine.classList.remove('swap'); void nameLine.offsetWidth; nameLine.classList.add('swap');
+  };
+  const reset = () => {
+    days.forEach(d => d.classList.remove('on', 'now'));
+    badge.classList.remove('show');
+  };
+  const step = k => {
+    if (!visible) { running = false; return; }
+    if (k === 0) reset();
+    if (k < 7) {
+      days.forEach(d => d.classList.remove('now'));
+      days[k].classList.add('on', 'now');
+      showSlide(k);
+      setName(k);
+      timer = setTimeout(() => step(k + 1), 1150);
+    } else {
+      days.forEach(d => d.classList.remove('now'));
+      badge.classList.add('show');
+      timer = setTimeout(() => step(0), 3800);
+    }
+  };
+  const start = () => {
+    if (running) return;
+    running = true;
+    week.classList.add('is-anim');
+    loadSlides();
+    step(0);
+  };
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(entries => {
+      visible = entries.some(e => e.isIntersecting);
+      if (visible) start();
+      else { clearTimeout(timer); running = false; }
+    }, { threshold: 0, rootMargin: '0px 0px -15% 0px' }).observe(media);
+  } else { visible = true; start(); }
+})();
