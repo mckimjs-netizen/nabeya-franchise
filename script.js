@@ -437,18 +437,18 @@
   }
 })();
 
-/* 숫자 카운트업: 01 POS 데이터(265·116·48.3), 06 마케팅(800만원), 11 재료 기준(168·0.1·100) */
+/* 숫자 카운트업: 01 POS 데이터(265·116·48.3), 02 재주문율(64.67%·그래프·+15.17%p), 06 마케팅(800만원), 11 재료 기준(168·0.1·100) */
 (() => {
   if (!('IntersectionObserver' in window)) return;
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const format = (value, decimals) => value.toLocaleString('ko-KR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 
-  // 요소 안 첫 글자 숫자만 분리해 애니메이션 대상으로 만든다 (뒤 글자 '만원 상당' 등은 그대로 둠)
-  const prepare = el => {
-    const node = [...el.childNodes].find(n => n.nodeType === Node.TEXT_NODE && n.textContent.trim());
+  // 요소 안 첫 숫자만 분리해 애니메이션 대상으로 만든다 (앞뒤 글자 '재주문율 ', '만원 상당', '%p' 등은 그대로 둠)
+  const prepare = (el, opts = {}) => {
+    const node = [...el.childNodes].find(n => n.nodeType === Node.TEXT_NODE && /\d/.test(n.textContent));
     if (!node) return null;
-    const match = node.textContent.match(/^(\s*)([\d,]+(?:\.\d+)?)(.*)$/s);
+    const match = node.textContent.match(/^([^\d]*?)([\d,]+(?:\.\d+)?)(.*)$/s);
     if (!match) return null;
     const [, lead, numText, rest] = match;
     const target = parseFloat(numText.replace(/,/g, ''));
@@ -464,36 +464,67 @@
     }
     el.style.fontVariantNumeric = 'tabular-nums';
     const decimals = (numText.split('.')[1] || '').length;
-    numNode.textContent = format(0, decimals);
-    return { node: numNode, text: numText, target, decimals };
+    const from = opts.from ?? 0;
+    numNode.textContent = format(from, decimals);
+    return { node: numNode, text: numText, target, decimals, from, bar: opts.bar || null };
   };
 
-  const animate = items => {
+  const setBar = (bar, value) => { if (bar) bar.style.setProperty('--rate', `${value}%`); };
+
+  const animate = (items, duration = 1600) => {
+    items.forEach(item => setBar(item.bar, item.from));
     const start = performance.now();
-    const duration = 1600;
     const tick = now => {
       const p = Math.min(1, (now - start) / duration);
       const eased = 1 - Math.pow(1 - p, 3);
-      items.forEach(item => { item.node.textContent = p < 1 ? format(item.target * eased, item.decimals) : item.text; });
+      items.forEach(item => {
+        const value = item.from + (item.target - item.from) * eased;
+        item.node.textContent = p < 1 ? format(value, item.decimals) : item.text;
+        setBar(item.bar, p < 1 ? value : item.target);
+      });
       if (p < 1) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
   };
 
-  const groups = [
-    { box: '.proof-numbers', nums: '.proof-numbers b' },
-    { box: '.marketing-head', nums: '.marketing-head h2 strong' },
-    { box: '.standard-grid', nums: '.standard-grid .standard-metric strong' }
-  ];
-
-  groups.forEach(group => {
-    const box = document.querySelector(group.box);
-    if (!box) return;
-    const items = [...document.querySelectorAll(group.nums)].map(prepare).filter(Boolean);
-    if (!items.length) return;
+  const watch = (boxSelector, items, duration) => {
+    const box = document.querySelector(boxSelector);
+    items = items.filter(Boolean);
+    if (!box || !items.length) return;
     let done = false;
-    const run = () => { if (done) return; done = true; io.disconnect(); animate(items); };
-    const io = new IntersectionObserver(entries => { if (entries.some(e => e.isIntersecting)) run(); }, { threshold: 0.3 });
+    const io = new IntersectionObserver(entries => {
+      if (done || !entries.some(e => e.isIntersecting)) return;
+      done = true;
+      io.disconnect();
+      animate(items, duration);
+    }, { threshold: 0.3 });
     io.observe(box);
+  };
+
+  const all = selector => [...document.querySelectorAll(selector)];
+
+  // 01 POS 데이터
+  watch('.proof-numbers', all('.proof-numbers b').map(el => prepare(el)));
+
+  // 02 재주문율: 제목 숫자
+  watch('.reorder-copy', all('.reorder-copy h2 strong').map(el => prepare(el)));
+
+  // 02 재주문율: 그래프 (부산본점은 0에서 커지고, 비교 대상은 100%에서 줄어듦)
+  const reorderItems = all('.reorder-data .reorder-row').map(row => {
+    const num = row.querySelector('b');
+    const bar = row.querySelector('i');
+    if (!num || !bar) return null;
+    const grows = row.classList.contains('featured');
+    const item = prepare(num, { from: grows ? 0 : 100, bar });
+    if (item) setBar(bar, item.from);
+    return item;
   });
+  const delta = document.querySelector('.reorder-delta strong');
+  watch('.reorder-data', [...reorderItems, delta && prepare(delta)], 2000);
+
+  // 06 마케팅 지원 800만원
+  watch('.marketing-head', all('.marketing-head h2 strong').map(el => prepare(el)));
+
+  // 11 재료 기준 카드
+  watch('.standard-grid', all('.standard-grid .standard-metric strong').map(el => prepare(el)));
 })();
