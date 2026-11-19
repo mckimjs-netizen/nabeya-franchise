@@ -84,6 +84,10 @@ b,strong{font-weight:700}
 .op-grid i{display:block;color:var(--red);font:700 11px var(--sans);font-style:normal;letter-spacing:-.02em}
 .op-grid b{display:block;margin-top:3px;font:700 16px var(--serif);letter-spacing:-.045em}
 .op-note{margin:14px 0 20px;color:#8b8079;font-size:11.5px;line-height:1.7}
+.popup-box.popup-suneung{height:auto;min-height:0;padding:0;background:#fff;overflow:hidden}
+.popup-suneung>img{display:block;width:100%;height:auto}
+.popup-suneung .popup-foot{position:static;border:0;border-top:1px solid rgba(60,55,54,.2);background:#fff}
+.popup-suneung .popup-foot button{padding:14px 6px;font-size:13px}
 .popup-kimchi{padding-top:46px;padding-bottom:96px}
 .popup-kimchi h2{margin:6px 0 9px;font-size:24px;line-height:1.22}
 .kw-photo{display:block;width:84%;max-width:280px;height:100px;margin:0 auto;object-fit:cover;object-position:center}
@@ -102,6 +106,7 @@ b,strong{font-weight:700}
   .popup-stack{display:flex;align-items:flex-start;gap:12px;width:100%;max-width:100%;padding:0 24px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   .popup-stack::-webkit-scrollbar{display:none}
   .popup-box{flex:0 0 min(430px,calc(100vw - 72px));height:560px;min-height:560px;padding:44px 38px 116px;scroll-snap-align:center}
+  .popup-box.popup-suneung{height:auto;min-height:0;padding:0}
   .popup-kimchi{padding-top:38px;padding-bottom:88px}
   .popup-x{right:25px;top:22px}
   .popup-foot{right:36px;bottom:50px;left:36px}

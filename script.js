@@ -150,7 +150,10 @@
 
   const popup = document.getElementById('entryNotice');
   if (popup) {
-    const popupKey = 'nabeya-popup-hidden-until-4';
+    const popupKey = 'nabeya-popup-hidden-until-5';
+    popup.querySelectorAll('[data-popup-until]').forEach(item => {
+      if (Date.now() > Date.parse(item.dataset.popupUntil)) item.remove();
+    });
     const hiddenUntil = Number(localStorage.getItem(popupKey) || 0);
     const forcePreview = new URLSearchParams(location.search).has('previewPopup');
     const closePopup = () => {
